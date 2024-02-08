@@ -160,6 +160,37 @@ class Main_window(QMainWindow):
         self.hand_frame.setFrameShape(QtWidgets.QFrame.Box)
         self.hand_frame.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.hand_frame.setLineWidth(2)
+       
+        self.events_frame = QFrame(self)
+        self.events_frame.setGeometry(QtCore.QRect(425, 250, 400, 400))
+        self.events_frame.setStyleSheet("QWidget { background-color: pink}") 
+        self.events_frame.show()
+        
+        self.event_pict = QtWidgets.QLabel(self.events_frame)
+        self.event_pict.setGeometry(QtCore.QRect(140, 10, 120, 120))
+        self.event_pict.setStyleSheet("color: white; background-color: white")
+        self.event_pict.setPixmap(QtGui.QPixmap(""))
+        self.event_pict.setScaledContents(True)
+        
+        self.eventcard_label = QLabel(self.events_frame)
+        self.eventcard_label.setGeometry(QtCore.QRect(10, 180, 110, 20))
+        self.eventcard_label.setText("Card: "+"")
+        
+        self.eventtype_label = QLabel(self.events_frame)
+        self.eventtype_label.setGeometry(QtCore.QRect(10, 132, 110, 20))
+        self.eventtype_label.setText("Type: "+"")
+        
+        
+        
+        self.eventattr_label = QLabel(self.information_frame)
+        self.eventattr_label.setGeometry(QtCore.QRect(10, 10, 180, 190))
+        self.eventattr_label.setText("Attr: "+"")
+        
+        
+        
+        
+        
+        # layouts and grids
         
         self.handlayout = QGridLayout()
         self.hand_frame.setLayout(self.handlayout)
