@@ -100,7 +100,8 @@ class Control(DBControl):
         
     def spacekarmaphasefunction(self):
         #self.ui.info_phase_label.setText("Space Karma Phase")
-        SpaceKarmaPhase(self.conector).actionphase()
+        communicator = SpaceKarmaPhase(self.conector).actionphase()
+        return communicator
         
     def eventphasefunction(self):
         #self.ui.info_phase_label.setText("Events Phase")
@@ -108,19 +109,24 @@ class Control(DBControl):
         
     def battlepreparationfunction(self):
         self.battle = BattlePhase(self.conector)
-        self.battle.actionphase()
+        communicator = self.battle.actionphase()
+        return communicator
     
     def battledefendersfunction(self):
-        self.battle.vsdefenders()
+        communicator = self.battle.vsdefenders()
+        return communicator
         
     def battlelassersfunction(self):
-        self.battle.vsturrets()
+        communicator = self.battle.vsturrets()
+        return communicator
         
     def battledomesfunction(self):
-        self.battle.vsdome()
+        communicator = self.battle.vsdome()
+        return communicator
         
     def battlebasefunction(self):
-        self.battle.vsbase()
+        communicator = self.battle.vsbase()
+        return communicator
     
     def buildphasefunctiontester(self):
         #self.ui.info_phase_label.setText("Build Phase")

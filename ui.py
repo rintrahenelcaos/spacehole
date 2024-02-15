@@ -549,7 +549,8 @@ class Main_window(QMainWindow):
         
     def spacekarmaphasefunction(self):
         self.info_phase_label.setText("Space Karma Phase")
-        self.control.spacekarmaphasefunction()
+        happening = self.control.spacekarmaphasefunction()
+        self.happening_label.setText( happening)
         
     def eventphasefunction(self):
         self.info_phase_label.setText("Events Phase")
@@ -565,6 +566,7 @@ class Main_window(QMainWindow):
             self.eventtype_label.setText("Type: Event")
             self.eventattr_label.setText("Attr: "+self.db.cardselector(number)[0][11])
             self.events_frame.show()
+            self.happening_label.setText("The event: "+self.db.cardselector(number)[0][1]+" has taken place")
         #else: pass
             #self.counterturn += 1
             #self.gameplay()
@@ -584,30 +586,32 @@ class Main_window(QMainWindow):
     def battlepreparationfunction(self):
         #self.passturn_button.setEnabled(False)
         self.info_phase_label.setText("Battle Preparations Phase")
-        self.control.battlepreparationfunction()
-        
+        happen = self.control.battlepreparationfunction()
+        self.happening_label.setText(happen)
         
         """if len(self.db.invertedcardselector("placement","invader")) == 0:
             self.counterturn += 4"""
     
     def battledefendersfunction(self):
         self.info_phase_label.setText("Battle vs Defenders Phase")
-        self.control.battledefendersfunction() 
-        
-        
+        happen = self.control.battledefendersfunction()
+        self.happening_label.setText(happen) 
+       
     def battlelassersfunction(self):
         self.info_phase_label.setText("Battle vs Lassers Phase")
-        self.control.battlelassersfunction()
-        
+        happen = self.control.battlelassersfunction()
+        self.happening_label.setText(happen) 
     
     def battledomesfunction(self):
         self.info_phase_label.setText("Battle vs Domes Phase")
-        self.control.battledomesfunction()
+        happen = self.control.battledomesfunction()
+        self.happening_label.setText(happen) 
         
         
     def battlebasefunction(self):
         self.info_phase_label.setText("Battle vs Base Phase")
-        self.control.battlebasefunction()
+        happen = self.control.battlebasefunction()
+        self.happening_label.setText(happen) 
         #self.viewactualizer()
         #self.passturn_button.setEnabled(True)
     
@@ -709,7 +713,7 @@ class Main_window(QMainWindow):
             for label in frames.findChildren(LabelFrames): 
                 if label.isVisible():
                     label.asociatedfunc = passer
-        #self.pass_build.setEnabled(False)
+        self.happening_label.setText("All damage dealt to "+ident+" repaired")
         self.gameplay()
         #self.viewactualizer()
         

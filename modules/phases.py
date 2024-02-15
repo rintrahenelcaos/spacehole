@@ -59,6 +59,7 @@ class SpaceKarmaPhase(Phase):
         self.availablecards = self.invertedcardselector("placement", "hand")
         self.hand= []
         self.hand = identifierextractor(self.availablecards)
+        self.communicator = ""
         
     
     def actionphase(self, *args):
@@ -71,15 +72,19 @@ class SpaceKarmaPhase(Phase):
             try:
                 if card[0][2] == "event":
                     self.tablemodifier(i, "placement", "event")
+                    self.communicator = "Event: "+card[0][1]+" about to happen"
                 elif card[0][2] == "invader":
                     self.tablemodifier(i, "placement", "invader")
-            except: pass
+                    self.communicator = "New invader: "+card[0][1]
+            except: self.communicator = "No new events or invaders to report"
+        return self.communicator
 
 class EventPhase(Phase):
     def __init__(self, deck):
         super().__init__(deck)
         #self.avalablecards = self.invertedcardselector()
         self.deck = deck
+        
     
     def actionphase(self, *args):
         eventsonwaittuple = self.invertedcardselector("placement", "event")
@@ -104,7 +109,7 @@ class EventPhase(Phase):
             
     def eventlauncher(self, event):
         ev = self.cardselector(event)[0][11]
-        print("event: ",event)
+        
         meg = Events(self.deck, ev).actionphase()
         return meg
         
@@ -251,6 +256,8 @@ class BattlePhase(Phase):
     def __init__(self, deck):
         super().__init__(deck)
         
+        self.communicator =""
+        
     def actionphase(self, *args):
         
         
@@ -310,9 +317,16 @@ class BattlePhase(Phase):
                 self.forcedomes.remove(dome)
         print("domes",self.forcedomes) 
         
+        self.communicator = "Invaders: "
+        for i in self.invaderlist:
+            self.communicator += self.cardselector(i)[0][1]
+        self.communicator += " are marching"
+        
         print("self.totalattack", self.totalattack)
         print("self.totaldefense",self.totaldefense)
         print("self.totallasser", self.totallasser)
+        
+        return self.communicator
         
         
     def vsdefenders(self, *args):
@@ -320,8 +334,11 @@ class BattlePhase(Phase):
         
         
         if len(self.invaderlist) > 0:
+            originalinvaderattack = self.totalattack
+            originaldefense = self.totaldefense
             while self.totalattack > 0:
                 if len(self.defenderslist) > 0:
+                    
                     targetdef = random.choice(self.defenderslist)
                     hitted = int(self.cardselector(targetdef)[0][16])
                     hitted += 1
@@ -343,14 +360,18 @@ class BattlePhase(Phase):
                         self.invaderlist.remove(targetinvader)
                     self.totaldefense -= 1
                 else: break
+            self.communicator = "Damage dealt to defenders: "+str(originalinvaderattack-self.totalattack)+". Damage dealt to invaders by defenders: "+str(originaldefense - self.totaldefense)
             print("self.totalattack", self.totalattack)
             print("self.totaldefense",self.totaldefense)
-        else: print("No invaders present")
+        else: self.communicator = "All invaders destroyed"
+        return self.communicator
         
                 
     def vsturrets(self, *args):
         
         if len(self.invaderlist) > 0 :
+            originalinvaderattack = self.totalattack
+            originallasser = self.totallasser
             while self.totalattack > 0:
                 if len(self.lasserturrets) > 0:
                     targetlasser = random.choice(self.lasserturrets)
@@ -375,13 +396,17 @@ class BattlePhase(Phase):
                         self.invaderlist.remove(targetinvader)
                     self.totallasser -= 1
                 else: break
+            
+            self.communicator = "Damage dealt to lassers: "+str(originalinvaderattack-self.totalattack)+". Damage dealt to invaders by lassers: "+str(originallasser - self.totallasser)
             print("self.totalattack", self.totalattack)
             print("self.totallasser", self.totallasser)
-        else: print("No invaders present")
+        else: self.communicator = "All invaders destroyed"
+        return self.communicator
     
     def vsdome(self, *args):
         
         if len(self.invaderlist) > 0:
+            originalinvaderattack = self.totalattack
             while self.totalattack > 0:
                 if len(self.forcedomes) > 0:
                     targetdome = random.choice(self.forcedomes)
@@ -393,12 +418,15 @@ class BattlePhase(Phase):
                         self.forcedomes.remove(targetdome)
                     self.totalattack -= 1
                 else: break
+            self.communicator = "Damage dealt to domes: "+str(originalinvaderattack-self.totalattack)+"."
             print("self.totalattack", self.totalattack)
-        else: print("No invaders present")
+        else: self.communicator = "All invaders destroyed"
+        return self.communicator
     
     def vsbase(self, *args):
         
         if len(self.invaderlist) > 0:
+            originalinvaderattack = self.totalattack
             while self.totalattack > 0:
                 if self.cardselector(1)[0][14] != "discard":
                     
@@ -412,8 +440,10 @@ class BattlePhase(Phase):
                         
                     self.totalattack -= 1
                 else: break
+            self.communicator = "Damage dealt to base: "+str(originalinvaderattack-self.totalattack)+"."
             print("self.totalattack", self.totalattack)
-        else: print("No invaders present")
+        else: self.communicator = "All invaders destroyed"
+        return self.communicator
         
 
 

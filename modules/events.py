@@ -116,7 +116,7 @@ class Events(DBControl):
         discarteddefender = []
         discarded = identifierextractor(self.invertedcardselector("placement", "discard"))
         for discarted in discarded:
-            if self.cardselector(discarted)[0][3] == "defender":
+            if self.cardselector(discarted)[0][2] == "defender":
                 discarteddefender.append(discarted)
         if len(discarteddefender) > 0:
             returned = random.choice(discarteddefender)
@@ -128,7 +128,7 @@ class Events(DBControl):
         discartedbuilding = []
         discarded = identifierextractor(self.invertedcardselector("placement", "discard"))
         for discarted in discarded:
-            if self.cardselector(discarted)[0][3] == "build":
+            if self.cardselector(discarted)[0][2] == "build":
                 discartedbuilding.append(discarted)
         if len(discartedbuilding) > 0:
             returned = random.choice(discartedbuilding)
