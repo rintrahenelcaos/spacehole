@@ -46,7 +46,7 @@ Starmada,invader,,0,0,0,0,0,0,0,0,,6,6,deck,,0,starmada
 Time_Warp_Fugitives,invader,,0,0,0,0,0,0,0,0,,3,3,deck,,0,time_warp_fugitives
 World_Eater,invader,,0,0,0,0,0,0,0,0,,7,7,deck,,0,world_eater
 Solar_Flare,event,,0,0,0,0,0,0,0,0,damage_to_defenders,0,0,deck,,0,solar_flare
-Reinforcements,event,,0,0,0,0,0,0,0,0,return_discarded,0,0,deck,,0,reinforcements
+Reinforcements,event,,0,0,0,0,0,0,0,0,return_discarded_defender,0,0,deck,,0,reinforcements
 Lost_in_Space,event,,0,0,0,0,0,0,0,0,discard_defender,0,0,deck,,0,lost_in_space
 Supernova,event,,0,0,0,0,0,0,0,0,discard_hand,0,0,deck,,0,supernova
 Lab_Explosion,event,,0,0,0,0,0,0,0,0,destroy_structure,0,0,deck,,0,lab_explosion
@@ -54,16 +54,16 @@ Core_Instabilities,event,,0,0,0,0,0,0,0,0,destroy_structure,0,0,deck,,0,core_ins
 Terraform,event,,0,0,0,0,0,0,0,0,increase_prod,0,0,deck,,0,terraform
 Black_Hole,event,,0,0,0,0,0,0,0,0,destroy_defender,0,0,deck,,0,black_hole
 Emergency_Repairs,event,,0,0,0,0,0,0,0,0,eliminate_damage,0,0,deck,,0,emergency_repairs
-Seismic_Events,event,,0,0,0,0,0,0,0,0,gain_money,0,0,deck,,0,seismic_events
+Seismic_Events,event,,0,0,0,0,0,0,0,0,destroy_structure,0,0,deck,,0,seismic_events
 Intergalactic_War,event,,0,0,0,0,0,0,0,0,destroy_defender,0,0,deck,,0,intergalactic_war
 Sabotage,event,,0,0,0,0,0,0,0,0,destroy_structure,0,0,deck,,0,sabotage
-Dilithium_Crystals,event,,0,0,0,0,0,0,0,0,gain_money,0,0,deck,,0,dilithium_crystals
-Space_Traders,event,,0,0,0,0,0,0,0,0,gain_money,0,0,deck,,0,space_traders
+Dilithium_Crystals,event,,0,0,0,0,0,0,0,0,gain_per_mine,0,0,deck,,0,dilithium_crystals
+Space_Traders,event,,0,0,0,0,0,0,0,0,gain_money_per_structure,0,0,deck,,0,space_traders
 Planet_Bombs,event,,0,0,0,0,0,0,0,0,destroy_structure,0,0,deck,,0,planet_bombs
 Meteor_Swarm,event,,0,0,0,0,0,0,0,0,destroy_structure,0,0,deck,,0,meteor_swarm
-Space_Virus,event,,0,0,0,0,0,0,0,0,destroy_defender + destroy_structure,0,0,deck,,0,space_virus
-Discovery,event,,0,0,0,0,0,0,0,0,gain_money,0,0,deck,,0,discovery
-Merchant_from_Venus,event,,0,0,0,0,0,0,0,0,gain_money,0,0,deck,,0,merchant_from_venus
-Cosmic_Con_Artist,event,,0,0,0,0,0,0,0,0,gain_money,0,0,deck,,0,cosmic_con_artist
-Interstellar_Tax_Men,event,,0,0,0,0,0,0,0,0,gain_money,0,0,deck,,0,interestellar_tax_men
-Repairs,event,,0,0,0,0,0,0,0,0,return_discarded,0,0,deck,,0,repairs
+Space_Virus,event,,0,0,0,0,0,0,0,0,destroy_defender,0,0,deck,,0,space_virus
+Discovery,event,,0,0,0,0,0,0,0,0,gain_per_lab,0,0,deck,,0,discovery
+Merchant_from_Venus,event,,0,0,0,0,0,0,0,0,gain_per_colony,0,0,deck,,0,merchant_from_venus
+Cosmic_Con_Artist,event,,0,0,0,0,0,0,0,0,halve_money,0,0,deck,,0,cosmic_con_artist
+Interstellar_Tax_Men,event,,0,0,0,0,0,0,0,0,tax,0,0,deck,,0,interestellar_tax_men
+Repairs,event,,0,0,0,0,0,0,0,0,return_discarded_building,0,0,deck,,0,repairs

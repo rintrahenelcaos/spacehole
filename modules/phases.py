@@ -3,8 +3,12 @@ import random
 
 try:
     from dbcontrol import DBControl
+    from events import Events
 except:
     from modules.dbcontrol import DBControl, identifierextractor
+    from modules.events import Events
+
+
 
 
 class Phase():
@@ -75,6 +79,7 @@ class EventPhase(Phase):
     def __init__(self, deck):
         super().__init__(deck)
         #self.avalablecards = self.invertedcardselector()
+        self.deck = deck
     
     def actionphase(self, *args):
         eventsonwaittuple = self.invertedcardselector("placement", "event")
@@ -82,7 +87,7 @@ class EventPhase(Phase):
         
         if len(eventsonwait) > 0:
             
-            self.eventlauncher()
+            meg = self.eventlauncher(eventsonwait[0])
             self.tablemodifier(eventsonwait[0], "placement", "discard")
             
         invadersonwaittuple = self.invertedcardselector("placement", "invader")
@@ -91,12 +96,19 @@ class EventPhase(Phase):
             print("battle")
             print(invadersonwait)
             #self.battle()
+        
+        return meg
             
             
         
             
-    def eventlauncher(self):
-        print("event")
+    def eventlauncher(self, event):
+        ev = self.cardselector(event)[0][11]
+        print("event: ",event)
+        meg = Events(self.deck, ev).actionphase()
+        return meg
+        
+        
 
 
     def battle(self):
@@ -420,7 +432,7 @@ class Buildphase(Phase):
         self.refinerie = 0
         self.colonies = 0
         self.labs = 0
-        
+        self.comunicator = ""
         #print("self.builded",self.builded)
         
         self.conditionalcalculators()
@@ -472,7 +484,7 @@ class Buildphase(Phase):
         elif tobuild[2] == "defender":
             self.recruit(tobuild)   
         self.conditionalcalculators()
-        return self.power, self.agrogen, self.defenders, self.mining, self.refinerie, self.colonies, self.labs 
+        return self.comunicator 
             
     
     
@@ -488,13 +500,15 @@ class Buildphase(Phase):
         
         if ok: 
             self.tablemodifier(tested[0], "placement", "builded")
-        else:pass
+            self.comunicator = str(self.cardselector(tested[0])[0][1])+" builded"
+        else: self.comunicator = "Building conditions not met"
         
     def recruit(self, tested):
         if self.defenders + tested[6] > -1:
             
-            self.tablemodifier(tested[0], "placement", "defending")   
-        else:pass
+            self.tablemodifier(tested[0], "placement", "defending")  
+            self.comunicator = str(self.cardselector(tested[0])[0][1])+" recruited" 
+        else:self.comunicator = "Recruiting conditions not met"
             
 class PowerPhase(Phase):
     def __init__(self, deck):
@@ -533,6 +547,17 @@ class IncomePhase(Phase):    #ojo aca
         megacredits += self.megacredits
         #print(megacredits)
         return megacredits
+    
+class DiscardPhase(Phase):
+    def __init__(self, deck):
+        super().__init__(deck)
+        self.handmax = 5
+        inhand = identifierextractor(self.invertedcardselector("placement", "hand"))
+        if len(inhand) > self.handmax:
+            pass
+        
+        
+        
     
        
     

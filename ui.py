@@ -18,6 +18,8 @@ from PyQt5.QtCore import Qt, QLine, QPointF, QRectF, QLine, QEvent
 import sqlite3
 import random
 import sys
+import time
+
 from control2 import Control
 from modules.cards import cardextraction, massiveloader, tableconstructor, tabledropper
 from modules.dbcontrol import DBControl, identifierextractor
@@ -66,19 +68,21 @@ class Main_window(QMainWindow):
 
         self.menubar = QtWidgets.QMenuBar(self)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1250, 21))
-        self.file_menu = self.menubar.addMenu("File")
+        self.file_menu = self.menubar.addMenu("Game")
 
-        self.action_load_map = QtWidgets.QAction()
-        self.file_menu.addAction(self.action_load_map)
-        self.action_load_map.setText("Load Map")
+        self.new_game = QtWidgets.QAction(self)
+        self.file_menu.addAction(self.new_game)
+        self.new_game.setText("New Game")
+        self.new_game.triggered.connect(lambda: self.restart())
         
-        self.action_new_map = QtWidgets.QAction()
+        
+        """self.action_new_map = QtWidgets.QAction()
         self.file_menu.addAction(self.action_new_map)
         self.action_new_map.setText("New Map")
       
         self.action_clear_map = QtWidgets.QAction()
         self.file_menu.addAction(self.action_clear_map)
-        self.action_clear_map.setText("Clear Map")
+        self.action_clear_map.setText("Clear Map")"""
 
         self.info_phase_label = QtWidgets.QLabel(self)
         self.info_phase_label.setGeometry(QtCore.QRect(10, 60, 200, 10))
@@ -89,11 +93,11 @@ class Main_window(QMainWindow):
         self.passturn_button = QPushButton(self)
         self.passturn_button.setGeometry(QtCore.QRect(900, 900, 50, 50))
         self.passturn_button.setStyleSheet("QWidget { background-color: white}")
-        self.passturn_button.setText("pass turn")
+        self.passturn_button.setText("New Game")
         self.passturn_button.clicked.connect(lambda:self.gameplay())
         
         self.megacredits_label = QLabel(self)
-        self.megacredits_label.setGeometry(QtCore.QRect(80, 920,150, 50))
+        self.megacredits_label.setGeometry(QtCore.QRect(10, 20,150, 10))
         self.megacredits_label.setText("Megacredits: $"+str(self.control.megacredits))
         self.megacredits_label.setStyleSheet("color: green")
 
@@ -160,11 +164,24 @@ class Main_window(QMainWindow):
         self.hand_frame.setFrameShape(QtWidgets.QFrame.Box)
         self.hand_frame.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.hand_frame.setLineWidth(2)
+        
+        self.pass_build = QPushButton(self.hand_frame)
+        #self.pass_build.setGeometry(QtCore.QRect(116, 446, 106, 106))
+        #self.pass_build.setStyleSheet("color: white; background-color: red")
+        #self.pass_build.setText("Pass Build Phase")
+        #self.pass_build.clicked.connect(lambda: self.passbuild())
+        #self.pass_build.setEnabled(False)
+        
        
         self.events_frame = QFrame(self)
         self.events_frame.setGeometry(QtCore.QRect(425, 250, 400, 400))
         self.events_frame.setStyleSheet("QWidget { background-color: pink}") 
-        self.events_frame.show()
+        self.events_frame.hide()
+        
+        self.events_announce =QLabel(self.events_frame)
+        self.events_announce.setGeometry(QtCore.QRect(10, 60, 100,30))
+        self.events_announce.setText("EVENT")
+        self.events_announce.setStyleSheet("color: red; background-color: white")
         
         self.event_pict = QtWidgets.QLabel(self.events_frame)
         self.event_pict.setGeometry(QtCore.QRect(140, 10, 120, 120))
@@ -173,18 +190,80 @@ class Main_window(QMainWindow):
         self.event_pict.setScaledContents(True)
         
         self.eventcard_label = QLabel(self.events_frame)
-        self.eventcard_label.setGeometry(QtCore.QRect(10, 180, 110, 20))
+        self.eventcard_label.setGeometry(QtCore.QRect(10, 150, 110, 20))
         self.eventcard_label.setText("Card: "+"")
         
         self.eventtype_label = QLabel(self.events_frame)
-        self.eventtype_label.setGeometry(QtCore.QRect(10, 132, 110, 20))
+        self.eventtype_label.setGeometry(QtCore.QRect(10, 172, 110, 20))
         self.eventtype_label.setText("Type: "+"")
         
         
         
-        self.eventattr_label = QLabel(self.information_frame)
-        self.eventattr_label.setGeometry(QtCore.QRect(10, 10, 180, 190))
+        self.eventattr_label = QLabel(self.events_frame)
+        self.eventattr_label.setGeometry(QtCore.QRect(10, 192, 110, 60))
         self.eventattr_label.setText("Attr: "+"")
+        
+        self.event_button = QPushButton(self.events_frame)
+        self.event_button.setGeometry(QtCore.QRect(140, 262, 120, 40))
+        self.event_button.setText("OK")
+        self.event_button.clicked.connect(lambda: self.eventok())
+        
+        self.communication_frame = QFrame(self)
+        self.communication_frame.setGeometry(QtCore.QRect(425, 250, 400, 400))
+        self.communication_frame.setStyleSheet("QWidget { background-color: gray}")
+        self.communication_frame.hide()
+        
+        self.communication_label = QLabel(self.communication_frame)
+        self.communication_label.setText("Base Destroyed")
+        self.communication_label.setGeometry(QtCore.QRect(100,50,200,50))
+        
+        self.communication_label2 = QLabel(self.communication_frame)
+        self.communication_label2.setText("DEFEAT")
+        self.communication_label2.setGeometry(QtCore.QRect(100,120,200,50))
+        
+        self.communication_label_mega = QLabel(self.communication_frame)
+        self.communication_label_mega.setText("Megacredits = "+str(self.control.megacredits))
+        self.communication_label_mega.setGeometry(QtCore.QRect(100,180,200,50))
+        
+        self.communication_frame_button = QPushButton("Play Again",self.communication_frame)
+        self.communication_frame_button.setGeometry(QtCore.QRect(100,280,200,50))
+        self.communication_frame_button.clicked.connect(lambda: self.restart())
+        
+        
+        self.building_choose_frame = QFrame(self)
+        self.building_choose_frame.setGeometry(QtCore.QRect(425, 250, 400, 200))
+        self.building_choose_frame.setStyleSheet("QWidget { background-color: gray}")
+        self.building_choose_frame.hide() 
+        
+        self.building_label = QLabel(self.building_choose_frame)
+        self.building_label.setText("Building Phase Options")       
+        self.building_label.setGeometry(QtCore.QRect(100,20,200,50))
+        
+        self.choosing_button = QPushButton(self.building_choose_frame)
+        self.choosing_button.setGeometry(QtCore.QRect(60,80,280,50))
+        self.choosing_button.setStyleSheet("QWidget { background-color: red}")
+        self.choosing_button.show()
+        
+        self.choosing_button_2 = QPushButton(self.building_choose_frame)
+        self.choosing_button_2.setGeometry(QtCore.QRect(60,130,280,50))
+        self.choosing_button_2.setStyleSheet("QWidget { background-color: blue}")
+        self.choosing_button_2.show()
+        
+        
+        self.happening_label = QLabel(self)
+        self.happening_label.setGeometry(QtCore.QRect(10, 930, 800, 20))
+        self.happening_label.setText("Happening")
+        self.happening_label.setStyleSheet("color: white")
+        
+        #self.choosing_button_3 = QPushButton(self.communication_frame)
+        #self.choosing_button_3.setGeometry(QtCore.QRect(60,300,280,50))
+        #self.choosing_button_3.show()
+        
+        
+        
+        
+        
+        
         
         
         
@@ -192,8 +271,8 @@ class Main_window(QMainWindow):
         
         # layouts and grids
         
-        self.handlayout = QGridLayout()
-        self.hand_frame.setLayout(self.handlayout)
+        #self.handlayout = QGridLayout()
+        #self.hand_frame.setLayout(self.handlayout)
         
         handgrido(self.hand_frame, self.information_frame)
         self.genericlabelassigner()
@@ -231,39 +310,24 @@ class Main_window(QMainWindow):
         if identif != "":
             
             self.information_frame.show()
-            
             number = identifierextractor(self.db.invertedcardselector("card",identif))[0]
-            
             pic = self.db.genericdatabasequery("SELECT pict FROM images WHERE id="+str(number))[0][0]
-            
             self.info_pict.setPixmap(QtGui.QPixmap("images\\"+pic+".png"))
-
             card = self.db.cardselector(number)[0]
-
             self.cardname_label.setText("Card: "+card[1])
-
             self.cardtype_label.setText("Type: "+card[2])
-
             self.cardforce_label.setText("Force: "+str(card[12]))
-
             self.cardhits_label.setText("Hits: "+str(card[13]-card[16]))
-
             self.cardattr_label.setText("Attr: "+card[11])
         
         else: 
             
             self.information_frame.hide()
-            
             self.info_pict.setPixmap(QtGui.QPixmap(""))
-
             self.cardname_label.setText("Card: "+"")
-
             self.cardtype_label.setText("Type: "+"")
-
             self.cardforce_label.setText("Force: "+"")
-
             self.cardhits_label.setText("Hits: "+"")
-
             self.cardattr_label.setText("Attr: "+"")
         
         
@@ -399,8 +463,23 @@ class Main_window(QMainWindow):
                 if frame.objectName() == card:
                     label = frame.findChildren(LabelFrames)[0]
                     label.show()
-                    label.setEnabled(True)  
-                       
+                    label.setEnabled(True)
+        discarded = identifierextractor(self.db.invertedcardselector("placement", "discard"))
+        for discard in discarded:
+            card = self.db.cardselector(discard)[0][1]
+            for frame in self.base_frame.findChildren(BuildedFrames):
+                if frame.objectName() == card:
+                    label = frame.findChildren(LabelFrames)[0]
+                    label.hide()
+                    label.setEnabled(True)
+        indeck = identifierextractor(self.db.invertedcardselector("placement", "deck"))
+        for decked in indeck:
+            card = self.db.cardselector(decked)[0][1]
+            for frame in self.base_frame.findChildren(BuildedFrames):
+                if frame.objectName() == card:
+                    label = frame.findChildren(LabelFrames)[0]
+                    label.hide()
+                    label.setEnabled(True)
     
     def viewactualizer(self):
         self.handassigner()
@@ -408,11 +487,41 @@ class Main_window(QMainWindow):
         self.otherframesassigner(self.defenders_frame,"defending")
         self.buildactualizer() 
         self.megacredits_label.setText("Megacredits: $"+str(self.control.megacredits))                 
+        if self.db.cardselector(1)[0][14] == "discard":
+            self.communication_label_mega.setText("Megacredits = "+str(self.control.megacredits))
+            self.communication_frame.show()
+            self.passturn_button.setEnabled(False)
+        if len(identifierextractor(self.db.invertedcardselector("placement","deck"))) == 0:
+            self.communication_label_mega.setText("Megacredits = "+str(self.control.megacredits))
+            self.communication_frame.show()
+            self.passturn_button.setEnabled(False)
+            
+    def startgame(self):
+        
+        self.passturn_button.setText("Pass Phase")
+        self.passturn_button.setEnabled(True)
+        self.control.restarter()
+        self.viewactualizer()
+        self.communication_frame.hide()
+        self.info_phase_label.setText("New game starting")
+        self.control.startgame()
     
+    def restart(self):
+        self.passturn_button.setText("Start Game")
+        self.passturn_button.setEnabled(True)
+        self.control.restarter()
+        self.viewactualizer()
+        self.communication_frame.hide()
+        self.info_phase_label.setText("New game starting")
+        self.counterturn = 0
+        
+        
+        
+        
     
                      
     def gameplay(self):
-        if   self.counterturn == 0:  self.control.startgame()
+        if   self.counterturn == 0:  self.startgame()
         elif self.counterturn == 1:  self.drawphasefunction()
         elif self.counterturn == 2:  self.spacekarmaphasefunction()
         elif self.counterturn == 3:  self.eventphasefunction()
@@ -425,9 +534,14 @@ class Main_window(QMainWindow):
         #elif self.counterturn == 10: self.buildphasefunctiontester()
         #elif self.counterturn == 11: self.powerphasefunction()
         elif self.counterturn == 10: self.incomephasefunction()
+        elif self.counterturn == 11: self.handmaxcleaner()
         self.viewactualizer()
         self.counterturn += 1
-        if self.counterturn == 11: self.counterturn = 1
+        if self.counterturn == 12: self.counterturn = 1
+        
+    
+        
+        
     
     def drawphasefunction(self):
         self.info_phase_label.setText("Drawing Card")
@@ -439,50 +553,166 @@ class Main_window(QMainWindow):
         
     def eventphasefunction(self):
         self.info_phase_label.setText("Events Phase")
+        eventsonwait = identifierextractor(self.db.invertedcardselector("placement", "event"))
+        if len(self.db.invertedcardselector("placement","invader")) == 0:
+            self.counterturn += 5
+        #else:pass
+        if len(eventsonwait) > 0:
+            number = eventsonwait[0]
+            self.passturn_button.setEnabled(False)
+            self.event_pict.setPixmap(QtGui.QPixmap("images\\"+self.db.genericdatabasequery("SELECT pict FROM images WHERE id="+str(number))[0][0]+".png"))
+            self.eventcard_label.setText("Card: "+self.db.cardselector(number)[0][1])
+            self.eventtype_label.setText("Type: Event")
+            self.eventattr_label.setText("Attr: "+self.db.cardselector(number)[0][11])
+            self.events_frame.show()
+        #else: pass
+            #self.counterturn += 1
+            #self.gameplay()
+            #self.event_button.clicked.connect(lambda: self.eventok)
+        
+        
+    
+    def eventok(self):
         self.control.eventphasefunction()
+        self.events_frame.hide()
+        self.passturn_button.setEnabled(True)
+        self.gameplay()
+    
+    
+            
     
     def battlepreparationfunction(self):
+        #self.passturn_button.setEnabled(False)
         self.info_phase_label.setText("Battle Preparations Phase")
         self.control.battlepreparationfunction()
-        if len(self.db.invertedcardselector("placement","invader")) == 0:
-            self.counterturn += 4
+        
+        
+        """if len(self.db.invertedcardselector("placement","invader")) == 0:
+            self.counterturn += 4"""
     
     def battledefendersfunction(self):
         self.info_phase_label.setText("Battle vs Defenders Phase")
         self.control.battledefendersfunction() 
         
+        
     def battlelassersfunction(self):
         self.info_phase_label.setText("Battle vs Lassers Phase")
         self.control.battlelassersfunction()
+        
     
     def battledomesfunction(self):
         self.info_phase_label.setText("Battle vs Domes Phase")
         self.control.battledomesfunction()
         
+        
     def battlebasefunction(self):
         self.info_phase_label.setText("Battle vs Base Phase")
         self.control.battlebasefunction()
+        #self.viewactualizer()
+        #self.passturn_button.setEnabled(True)
     
     
     def buildphasefunctiontester(self):
         self.info_phase_label.setText("Build Phase 2")
         #self.control.buildphasefunctiontester()
         
-        
     def buildphasefunction(self):
-        self.info_phase_label.setText("Build Phase 1")
+        self.info_phase_label.setText("Build Phase")
+        self.passturn_button.setEnabled(False)
+        self.building_choose_frame.show()
+        self.choosing_button_2.setText("Build")
+        self.choosing_button_2.clicked.connect(lambda: self.buildingbuildphase())
+        self.choosing_button.setText("Repair")
+        self.choosing_button.clicked.connect(lambda: self.repairinbuilphase())
+        
+        
+    def buildingbuildphase(self):
+        self.building_choose_frame.hide()
+        self.passturn_button.setEnabled(True)
         for frames in self.hand_frame.findChildren(BuildedFrames):
             for label in frames.findChildren(LabelFrames):
                 if label.isVisible():
                     print(label.objectName())
                     label.asociatedfunc = self.building
                     self.viewactualizer()
+                    
+    def repairinbuilphase(self):
+        print("passbuild")
+        self.passturn_button.setEnabled(True)
+        self.building_choose_frame.hide()
+        for frames in self.hand_frame.findChildren(BuildedFrames):
+            for label in frames.findChildren(LabelFrames):
+                if label.isVisible():
+                    label.asociatedfunc = passer
+        for frame in self.base_frame.findChildren(BuildedFrames):
+            label = frame.findChildren(LabelFrames)[0]
+            if label.isVisible(): 
+                label.asociatedfunc = self.deletedamage
+        for frames in self.defenders_frame.findChildren(BuildedFrames):
+            for label in frames.findChildren(LabelFrames): 
+                if label.isVisible():
+                    label.asociatedfunc = self.deletedamage
+        self.viewactualizer()
+        
+        
+        
+        
+    def buildphasefunctionor(self, passing = False):
+        self.info_phase_label.setText("Build Phase")
+        for frames in self.hand_frame.findChildren(BuildedFrames):
+            for label in frames.findChildren(LabelFrames):
+                if label.isVisible():
+                    print(label.objectName())
+                    label.asociatedfunc = self.building
+                    self.viewactualizer()
+        if passing == False:
+            self.pass_build.setEnabled(True)
+        else: self.pass_build.setEnabled(False)
     
     def building(self, ident):
         
+        #self.pass_build.setEnabled(False)
         identificator = identifierextractor(self.db.invertedcardselector("card", ident))[0]
-        self.control.building(identificator)
+        happen = self.control.building(identificator)
+        self.happening_label.setText(happen)
         self.viewactualizer()
+        self.buildingbuildphase()
+        
+    def passbuild(self):
+        print("passbuild")
+        for frames in self.hand_frame.findChildren(BuildedFrames):
+            for label in frames.findChildren(LabelFrames):
+                if label.isVisible():
+                    label.asociatedfunc = passer
+        for frame in self.base_frame.findChildren(BuildedFrames):
+            label = frame.findChildren(LabelFrames)[0]
+            if label.isVisible(): 
+                label.asociatedfunc = self.deletedamage
+        for frames in self.defenders_frame.findChildren(BuildedFrames):
+            for label in frames.findChildren(LabelFrames): 
+                if label.isVisible():
+                    label.asociatedfunc = self.deletedamage
+        self.viewactualizer()
+                
+    
+    def deletedamage(self, ident):
+        
+        print("deletadamage")
+        identificator = identifierextractor(self.db.invertedcardselector("card", ident))[0]
+        self.db.tablemodifier(identificator, "hitted", "0")
+        self.viewactualizer()
+        for frame in self.base_frame.findChildren(BuildedFrames):
+            label = frame.findChildren(LabelFrames)[0]
+            if label.isVisible(): 
+                label.asociatedfunc = passer
+        for frames in self.defenders_frame.findChildren(BuildedFrames):
+            for label in frames.findChildren(LabelFrames): 
+                if label.isVisible():
+                    label.asociatedfunc = passer
+        #self.pass_build.setEnabled(False)
+        self.gameplay()
+        #self.viewactualizer()
+        
         
     def powerphasefunction(self):
         self.info_phase_label.setText("Power Phase")
@@ -490,6 +720,15 @@ class Main_window(QMainWindow):
         
     def incomephasefunction(self):
         self.info_phase_label.setText("Income Phase")
+        #self.pass_build.setEnabled(False)
+        for frame in self.base_frame.findChildren(BuildedFrames):
+            label = frame.findChildren(LabelFrames)[0]
+            if label.isVisible(): 
+                label.asociatedfunc = passer
+        for frames in self.defenders_frame.findChildren(BuildedFrames):
+            for label in frames.findChildren(LabelFrames): 
+                if label.isVisible():
+                    label.asociatedfunc = passer
         for frames in self.hand_frame.findChildren(BuildedFrames):
             for label in frames.findChildren(LabelFrames):
                 if label.isVisible():
@@ -497,6 +736,51 @@ class Main_window(QMainWindow):
                     label.asociatedfunc = passer
                     self.viewactualizer()
         self.control.incomephasefunction()
+        
+            
+        
+    def handmaxcleaner(self):
+        self.info_phase_label.setText("HAndclean Phase")
+        
+        
+        if self.db.cardselector(36)[0][14] == "builded":
+            handmax = 7
+        else: handmax = 5
+        
+        inhandcount = len(identifierextractor(self.db.invertedcardselector("placement", "hand")))
+        if inhandcount > handmax:
+            for frames in self.hand_frame.findChildren(BuildedFrames):
+                for label in frames.findChildren(LabelFrames): 
+                    if label.isVisible():
+                        label.asociatedfunc = self.discardextra
+            self.passturn_button.setEnabled(False)
+        else: 
+            for frames in self.hand_frame.findChildren(BuildedFrames):
+                for label in frames.findChildren(LabelFrames): 
+                    if label.isVisible():
+                        label.asociatedfunc = passer
+            self.passturn_button.setEnabled(True)
+            
+        """for frames in self.hand_frame.findChildren(BuildedFrames):
+            for label in frames.findChildren(LabelFrames): 
+                if label.isVisible():
+                    inhandcount += 1
+        if inhandcount > handmax:
+            for frames in self.hand_frame.findChildren(BuildedFrames):
+                for label in frames.findChildren(LabelFrames): 
+                    if label.isVisible():
+                        label.asociatedfunc = self.discardextra
+        else: label.asociatedfunc = passer"""
+            
+            
+    def discardextra(self, ident):
+        identificator = identifierextractor(self.db.invertedcardselector("card", ident))[0]
+        self.db.tablemodifier(identificator, "placement", "discard")
+        self.viewactualizer()
+        self.handmaxcleaner()
+        
+                      
+                
         
     
         
@@ -663,9 +947,9 @@ class LabelFrames(QLabel):
         self.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         
                 
-        self.button = QPushButton("pressme", self)
-        self.button.setGeometry(QtCore.QRect(0,0, 20,20))
-        self.button.setStyleSheet("background-color: black")
+        self.button = QPushButton(self)
+        self.button.setGeometry(QtCore.QRect(0,0, width,height))
+        self.button.setStyleSheet("background-color: transparent")
         self.button.clicked.connect( lambda:returner(self.asociatedfunc(identif)))
         
         self.labelhits = QLabel(str(self.hits), self)
@@ -824,7 +1108,7 @@ def handgrido(reference_frame, infoframe):
         BuildedFrames(reference_frame, postop, posleft, "hand", infoframe, width=106, height=106)
         
     posleft = 116
-    for j in range(5):
+    for j in range(4):
         postop = 6 + j * 110
         
         

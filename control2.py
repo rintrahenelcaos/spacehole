@@ -14,7 +14,7 @@ class Control(DBControl):
     def __init__(self, cardpath):
         
         #self.ui = Main_window()
-        
+        self.cardpath = cardpath
         self.conector = self.conection_sql()
         self.pointer = self.conector.cursor()
         tabledropper(self.conector)
@@ -87,6 +87,12 @@ class Control(DBControl):
         elif phaseindicator == 5: self.incomephasefunction()
         
         self.phasecounter += 1
+        
+    def restarter(self):
+        tabledropper(self.conector)
+        tableconstructor(self.conector)
+        self.deck = cardextraction(self.cardpath)
+        massiveloader(self.conector, self.deck)
     
     def drawphasefunction(self):
         #self.ui.info_phase_label.setText("Drawing Card")
@@ -98,7 +104,7 @@ class Control(DBControl):
         
     def eventphasefunction(self):
         #self.ui.info_phase_label.setText("Events Phase")
-        EventPhase(self.conector).actionphase()
+        self.megacredits += EventPhase(self.conector).actionphase()
         
     def battlepreparationfunction(self):
         self.battle = BattlePhase(self.conector)
@@ -120,23 +126,11 @@ class Control(DBControl):
         #self.ui.info_phase_label.setText("Build Phase")
         Buildphase(self.conector).testeractionphase()
       
-    def buildphasefunction(self):
-        #self.ui.info_phase_label.setText("Build Phase")
-        buildobj = Buildphase(self.conector)   
-             
-        #cardsinhand = self.ui.hand_frame.findChildren(QtWidgets.QLabel)
-        for i in cardsinhand:
-            if i.objectName() != "hand":
-                card = i.objectName()
-                print(card)
-                
-                ident = identifierextractor(self.invertedcardselector("card",card))[0]
-                print(ident)
-                i.button.clicked.connect(lambda:self.building(ident))
-    
+        
     def building(self, ident):
         
-        Buildphase(self.conector).actionphase(ident)  
+        comunicator = Buildphase(self.conector).actionphase(ident)
+        return comunicator  
                 
     
     def powerphasefunction(self):
