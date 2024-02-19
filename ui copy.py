@@ -104,6 +104,7 @@ class Main_window(QMainWindow):
         self.passturn_button.setStyleSheet("QWidget { background-color: white}")
         self.passturn_button.setText("New Game")
         self.passturn_button.clicked.connect(lambda:self.gameplay())
+        self.passturn_button.setShortcut("Space")
         
         
 
@@ -310,7 +311,7 @@ class Main_window(QMainWindow):
             pic = self.db.genericdatabasequery("SELECT pict FROM images WHERE id="+str(number))[0][0]
             descript = self.db.genericdatabasequery("SELECT descript FROM images WHERE id="+str(number))[0][0]
             self.info_pict.setPixmap(QtGui.QPixmap("images\\"+pic+".png"))
-            self.info_pict.setStyleSheet("background-color: white")
+            self.info_pict.setStyleSheet("background: white")
             card = self.db.cardselector(number)[0]
             
             self.cardname_label.setText("Card: "+card[1])
@@ -540,7 +541,7 @@ class Main_window(QMainWindow):
     def drawphasefunction(self):
         self.info_phase_label.setText("Drawing Card - Event and Invaders will automatically be played in the next phase")
         self.control.drawphasefunction()
-        self.hand_frame.setStyleSheet("background-color: #7c005d")
+        self.hand_frame.setStyleSheet("background-color: #808080")
         
     def spacekarmaphasefunction(self):
         
@@ -646,6 +647,7 @@ class Main_window(QMainWindow):
         self.info_phase_label.setText("Building: Choose cards in hand to play")
         self.building_choose_frame.hide()
         self.passturn_button.setEnabled(True)
+        self.passturn_button.setShortcut("Space")
         for frames in self.hand_frame.findChildren(BuildedFrames):
             for label in frames.findChildren(LabelFrames):
                 if label.isVisible():
@@ -656,6 +658,7 @@ class Main_window(QMainWindow):
     def repairinbuilphase(self):
         self.info_phase_label.setText("Repairing: Choose building or Defender to eliminate damge from")
         self.passturn_button.setEnabled(True)
+        self.passturn_button.setShortcut("Space")
         self.building_choose_frame.hide()
         for frames in self.hand_frame.findChildren(BuildedFrames):
             for label in frames.findChildren(LabelFrames):

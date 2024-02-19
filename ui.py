@@ -104,6 +104,7 @@ class Main_window(QMainWindow):
         self.passturn_button.setStyleSheet("QWidget { background-color: white}")
         self.passturn_button.setText("New Game")
         self.passturn_button.clicked.connect(lambda:self.gameplay())
+        self.passturn_button.setShortcut("Space")
         
         
 
