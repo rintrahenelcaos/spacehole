@@ -130,7 +130,7 @@ def tableconstructor(conection):
     table = "CREATE TABLE IF NOT EXISTS deck(id INTEGER PRIMARY KEY AUTOINCREMENT, card TEXT NOT NULL, type TEXT NOT NULL, income INTEGER, power INTEGER,  agrogen INTEGER,  defenders INTEGER, mining INTEGER, refinerie INTEGER, colonies INTEGER, labs INTEGER, notes TEXT, force INTEGER, hits INTEGER, placement TEXT, deckpos INTEGER, hitted INTEGER  )"
     pointer.execute(table)
     conection.commit()
-    tableimages = "CREATE TABLE IF NOT EXISTS images(id INTEGER PRIMARY KEY AUTOINCREMENT, card TEXT NOT NULL, pict TEXT )"
+    tableimages = "CREATE TABLE IF NOT EXISTS images(id INTEGER PRIMARY KEY AUTOINCREMENT, card TEXT NOT NULL, pict TEXT, descript TEXT )"
     pointer.execute(tableimages)
     conection.commit()
     #print("control creacion de tabla")
@@ -157,7 +157,7 @@ def loaddb(coneccion, tuplacarga):
 def loadimages(coneccion, tupleimages):
     
     pointer = coneccion.cursor()
-    load = "INSERT INTO images(card, pict) VALUES (?,?)"
+    load = "INSERT INTO images(card, pict, descript) VALUES (?,?,?)"
     pointer.execute(load, tupleimages)
     coneccion.commit()
     
@@ -181,7 +181,7 @@ def massiveloader(conector, deck):
         #print(loadtuple)
         loaddb(conector, loadtuple)
         
-        loadimagestuple = (row[0], row[16])
+        loadimagestuple = (row[0], row[16], row[17])
         loadimages(conector, loadimagestuple)
     
 

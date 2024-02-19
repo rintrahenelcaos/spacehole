@@ -1,69 +1,69 @@
-card,type,number,income,power,agrogen,defenders,mining,refinerie,colonies,labs,notes,force,hits,placement,deckpos,hitted,pict
-Base,build,1,0,5,0,2,0,0,0,0,Generates 5 power/turn,1,5,builded,,0,base
-Solar_Array,build,7,0,5,0,0,0,0,0,0,Generates 5 power/turn,0,1,deck,,0,solar_array
-Agrodome,build,6,1,-1,1,0,0,0,0,0,Supports Colony,0,1,deck,,0,agrodome
-Colony,build,4,3,-1,-1,1,0,0,1,0,Requires 1 Agrodome,0,1,deck,,0,colony
-Mine,build,8,1,-1,0,0,1,0,0,0,Supports Refinery,0,1,deck,,0,mine
-Refinery,build,4,2,-1,0,0,-2,1,0,0,Requires 2 Mines,0,1,deck,,0,refinery
-Factory,build,1,3,-1,0,0,0,-2,0,0,Requires 2 Refineries,0,1,deck,,0,factory
-Starport,build,1,5,-2,0,1,0,0,-2,0,Requires 2 Colonies,0,1,deck,,0,starport
-Research_Labs,build,2,1,-1,0,0,0,0,0,1,Supports Stargate,0,1,deck,,0,research_lab
-Stargate,build,1,7,-3,0,1,0,0,0,-1,Requires 1 Lab,0,1,deck,,0,stargate
-Command_Center,build,1,0,-1,0,1,0,0,0,0,Hand Size +2,0,1,deck,,0,command_center
-Laser_Turret,build,4,0,-1,0,0,0,0,0,0,Force = 1,1,1,deck,,0,laser_turret
-Force_Dome,build,2,0,-1,0,0,0,0,0,0,3 Hits,0,3,deck,,0,force_dome
-Space_Rangers,defender,,0,0,0,-1,0,0,0,0,Discard at end of turn to look at next 1D6 cards in deck,2,2,deck,,0,space_rangers
-Astro_Guard,defender,,0,0,0,-1,0,0,0,0,,2,2,deck,,0,astro_guard
-Space_Marines,defender,,0,0,0,-1,0,0,0,0,,3,3,deck,,0,space_marines
-Space_Navy,defender,,0,0,0,-1,0,0,0,0,,4,4,deck,,0,space_navy
-Battle_Station,defender,,0,0,0,-1,0,0,0,0,,4,4,deck,,0,battle_station
-Space_Knights,defender,,0,0,0,-1,0,0,0,0,,3,3,deck,,0,space_knights
-Star_Fighters,defender,,0,0,0,-1,0,0,0,0,,3,3,deck,,0,star_fighters
-Space_Hero,defender,,0,0,0,-1,0,0,0,0,,5,1,deck,,0,space_hero
-Star_Force,defender,,0,0,0,-1,0,0,0,0,,3,3,deck,,0,star_force
-Space_Patrol,defender,,0,0,0,-1,0,0,0,0,,2,2,deck,,0,space_patrol
-Space_Scouts,defender,,0,0,0,-1,0,0,0,0,Discard at end of turn to look at next 1D6 cards in deck,2,2,deck,,0,space_scouts
-Space_Troopers,defender,,0,0,0,-1,0,0,0,0,,3,3,deck,,0,space_troopers
-Alien_Artifact,defender,,0,0,0,-1,0,0,0,0,Play & use only if you have a Lab,5,5,deck,,0,alien_artifact
-Alien_Predators,invader,,0,0,0,0,0,0,0,0,,3,3,deck,,0,alien_predators
-Imperial_Stormtroopers,invader,,0,0,0,0,0,0,0,0,,4,4,deck,,0,imperial_stormtroopers
-Berserker_Robots,invader,,0,0,0,0,0,0,0,0,,6,6,deck,,0,berzerker_robots
-Alien_Invaders,invader,,0,0,0,0,0,0,0,0,,3,3,deck,,0,alien_invaders
-Corporate_Mercenaries,invader,,0,0,0,0,0,0,0,0,,3,3,deck,,0,corporate_mercenaries
-Cyborg_Collective,invader,,0,0,0,0,0,0,0,0,,6,6,deck,,0,cyborg_collective
-Little_Green_Men,invader,,0,0,0,0,0,0,0,0,,4,4,deck,,0,litttle_green_men
-Alien_Brainsuckers,invader,,0,0,0,0,0,0,0,0,,5,5,deck,,0,alien_brainsuckers
-Mutant_Space_Zombies,invader,,0,0,0,0,0,0,0,0,,3,3,deck,,0,mutant_space_zombies
-Cylon_Raiders,invader,,0,0,0,0,0,0,0,0,,4,4,deck,,0,cylon_raiders
-Space_Pirates,invader,,0,0,0,0,0,0,0,0,,3,3,deck,,0,space_pirates
-The_Warstar,invader,,0,0,0,0,0,0,0,0,,6,6,deck,,0,the_warstar
-Alien_Parasites,invader,,0,0,0,0,0,0,0,0,,4,4,deck,,0,alien_parasites
-Dalek_Exterminators,invader,,0,0,0,0,0,0,0,0,,5,5,deck,,0,dalek_exterminators
-Space_Monster,invader,,0,0,0,0,0,0,0,0,,5,5,deck,,0,space_monster
-Romulan_Warbirds,invader,,0,0,0,0,0,0,0,0,,4,4,deck,,0,romulan_warbirds
-Vampiric_Space_Beavers,invader,,0,0,0,0,0,0,0,0,,3,3,deck,,0,vampiric_space_beavers
-Starmada,invader,,0,0,0,0,0,0,0,0,,6,6,deck,,0,starmada
-Time_Warp_Fugitives,invader,,0,0,0,0,0,0,0,0,,3,3,deck,,0,time_warp_fugitives
-World_Eater,invader,,0,0,0,0,0,0,0,0,,7,7,deck,,0,world_eater
-Solar_Flare,event,,0,0,0,0,0,0,0,0,damage_to_defenders,0,0,deck,,0,solar_flare
-Reinforcements,event,,0,0,0,0,0,0,0,0,return_discarded_defender,0,0,deck,,0,reinforcements
-Lost_in_Space,event,,0,0,0,0,0,0,0,0,discard_defender,0,0,deck,,0,lost_in_space
-Supernova,event,,0,0,0,0,0,0,0,0,discard_hand,0,0,deck,,0,supernova
-Lab_Explosion,event,,0,0,0,0,0,0,0,0,destroy_structure,0,0,deck,,0,lab_explosion
-Core_Instabilities,event,,0,0,0,0,0,0,0,0,destroy_structure,0,0,deck,,0,core_instabilities
-Terraform,event,,0,0,0,0,0,0,0,0,increase_prod,0,0,deck,,0,terraform
-Black_Hole,event,,0,0,0,0,0,0,0,0,destroy_defender,0,0,deck,,0,black_hole
-Emergency_Repairs,event,,0,0,0,0,0,0,0,0,eliminate_damage,0,0,deck,,0,emergency_repairs
-Seismic_Events,event,,0,0,0,0,0,0,0,0,destroy_structure,0,0,deck,,0,seismic_events
-Intergalactic_War,event,,0,0,0,0,0,0,0,0,destroy_defender,0,0,deck,,0,intergalactic_war
-Sabotage,event,,0,0,0,0,0,0,0,0,destroy_structure,0,0,deck,,0,sabotage
-Dilithium_Crystals,event,,0,0,0,0,0,0,0,0,gain_per_mine,0,0,deck,,0,dilithium_crystals
-Space_Traders,event,,0,0,0,0,0,0,0,0,gain_money_per_structure,0,0,deck,,0,space_traders
-Planet_Bombs,event,,0,0,0,0,0,0,0,0,destroy_structure,0,0,deck,,0,planet_bombs
-Meteor_Swarm,event,,0,0,0,0,0,0,0,0,destroy_structure,0,0,deck,,0,meteor_swarm
-Space_Virus,event,,0,0,0,0,0,0,0,0,destroy_defender,0,0,deck,,0,space_virus
-Discovery,event,,0,0,0,0,0,0,0,0,gain_per_lab,0,0,deck,,0,discovery
-Merchant_from_Venus,event,,0,0,0,0,0,0,0,0,gain_per_colony,0,0,deck,,0,merchant_from_venus
-Cosmic_Con_Artist,event,,0,0,0,0,0,0,0,0,halve_money,0,0,deck,,0,cosmic_con_artist
-Interstellar_Tax_Men,event,,0,0,0,0,0,0,0,0,tax,0,0,deck,,0,interestellar_tax_men
-Repairs,event,,0,0,0,0,0,0,0,0,return_discarded_building,0,0,deck,,0,repairs
+card,type,number,income,power,agrogen,defenders,mining,refinerie,colonies,labs,notes,force,hits,placement,deckpos,hitted,pict,descript
+Base,build,1,0,5,0,2,0,0,0,0,Generates 5 power/turn,1,5,builded,,0,base,Generates 5 power/turn. Supports 2 Defenders. Force = 1. 
+Solar_Array,build,7,0,5,0,0,0,0,0,0,Generates 5 power/turn,0,1,deck,,0,solar_array,Generates 5 power/turn
+Agrodome,build,6,1,-1,1,0,0,0,0,0,Supports Colony,0,1,deck,,0,agrodome,Supports Colony. Power consumption = 1. Income = 1
+Colony,build,4,3,-1,-1,1,0,0,1,0,Requires 1 Agrodome,0,1,deck,,0,colony,Requires 1 Agrodome. Supports 1 Defender. Power consumption = 1. Income = 3
+Mine,build,8,1,-1,0,0,1,0,0,0,Supports Refinery,0,1,deck,,0,mine,Supports Refinery. Power consumption = 1. Income = 1
+Refinery,build,4,2,-1,0,0,-2,1,0,0,Requires 2 Mines,0,1,deck,,0,refinery,Requires 2 Mines. Power consumption = 1. Income = 2
+Factory,build,1,3,-1,0,0,0,-2,0,0,Requires 2 Refineries,0,1,deck,,0,factory,Requires 2 Refineries. Power consumption = 1. Income = 3
+Starport,build,1,5,-2,0,1,0,0,-2,0,Requires 2 Colonies,0,1,deck,,0,starport,Requires 2 Colonies. Supports 1 Defender. Power consumption = 2. Income = 5
+Research_Labs,build,2,1,-1,0,0,0,0,0,1,Supports Stargate,0,1,deck,,0,research_lab,Supports Stargate. Power consumption = 1. Income = 1
+Stargate,build,1,7,-3,0,1,0,0,0,-1,Requires 1 Lab,0,1,deck,,0,stargate,Requires 1 Lab. Supports 1 Defender. Power consumption = 3. Income = 7
+Command_Center,build,1,0,-1,0,1,0,0,0,0,Hand Size +2,0,1,deck,,0,command_center,Hand Size +2. Supports 1 Defender. Power consumption = 1.
+Laser_Turret,build,4,0,-1,0,0,0,0,0,0,Force = 1,1,1,deck,,0,laser_turret,Force = 1. Power consumption = 1.
+Force_Dome,build,2,0,-1,0,0,0,0,0,0,3 Hits,0,3,deck,,0,force_dome,3 Hits
+Space_Rangers,defender,,0,0,0,-1,0,0,0,0,Discard at end of turn to look at next 1D6 cards in deck,2,2,deck,,0,space_rangers,
+Astro_Guard,defender,,0,0,0,-1,0,0,0,0,,2,2,deck,,0,astro_guard,
+Space_Marines,defender,,0,0,0,-1,0,0,0,0,,3,3,deck,,0,space_marines,
+Space_Navy,defender,,0,0,0,-1,0,0,0,0,,4,4,deck,,0,space_navy,
+Battle_Station,defender,,0,0,0,-1,0,0,0,0,,4,4,deck,,0,battle_station,
+Space_Knights,defender,,0,0,0,-1,0,0,0,0,,3,3,deck,,0,space_knights,
+Star_Fighters,defender,,0,0,0,-1,0,0,0,0,,3,3,deck,,0,star_fighters,
+Space_Hero,defender,,0,0,0,-1,0,0,0,0,,5,1,deck,,0,space_hero,
+Star_Force,defender,,0,0,0,-1,0,0,0,0,,3,3,deck,,0,star_force,
+Space_Patrol,defender,,0,0,0,-1,0,0,0,0,,2,2,deck,,0,space_patrol,
+Space_Scouts,defender,,0,0,0,-1,0,0,0,0,Discard at end of turn to look at next 1D6 cards in deck,2,2,deck,,0,space_scouts,
+Space_Troopers,defender,,0,0,0,-1,0,0,0,0,,3,3,deck,,0,space_troopers,
+Alien_Artifact,defender,,0,0,0,-1,0,0,0,0,Play & use only if you have a Lab,5,5,deck,,0,alien_artifact,
+Alien_Predators,invader,,0,0,0,0,0,0,0,0,,3,3,deck,,0,alien_predators,
+Imperial_Stormtroopers,invader,,0,0,0,0,0,0,0,0,,4,4,deck,,0,imperial_stormtroopers,
+Berserker_Robots,invader,,0,0,0,0,0,0,0,0,,6,6,deck,,0,berzerker_robots,
+Alien_Invaders,invader,,0,0,0,0,0,0,0,0,,3,3,deck,,0,alien_invaders,
+Corporate_Mercenaries,invader,,0,0,0,0,0,0,0,0,,3,3,deck,,0,corporate_mercenaries,
+Cyborg_Collective,invader,,0,0,0,0,0,0,0,0,,6,6,deck,,0,cyborg_collective,
+Little_Green_Men,invader,,0,0,0,0,0,0,0,0,,4,4,deck,,0,litttle_green_men,
+Alien_Brainsuckers,invader,,0,0,0,0,0,0,0,0,,5,5,deck,,0,alien_brainsuckers,
+Mutant_Space_Zombies,invader,,0,0,0,0,0,0,0,0,,3,3,deck,,0,mutant_space_zombies,
+Cylon_Raiders,invader,,0,0,0,0,0,0,0,0,,4,4,deck,,0,cylon_raiders,
+Space_Pirates,invader,,0,0,0,0,0,0,0,0,,3,3,deck,,0,space_pirates,
+The_Warstar,invader,,0,0,0,0,0,0,0,0,,6,6,deck,,0,the_warstar,
+Alien_Parasites,invader,,0,0,0,0,0,0,0,0,,4,4,deck,,0,alien_parasites,
+Dalek_Exterminators,invader,,0,0,0,0,0,0,0,0,,5,5,deck,,0,dalek_exterminators,
+Space_Monster,invader,,0,0,0,0,0,0,0,0,,5,5,deck,,0,space_monster,
+Romulan_Warbirds,invader,,0,0,0,0,0,0,0,0,,4,4,deck,,0,romulan_warbirds,
+Vampiric_Space_Beavers,invader,,0,0,0,0,0,0,0,0,,3,3,deck,,0,vampiric_space_beavers,
+Starmada,invader,,0,0,0,0,0,0,0,0,,6,6,deck,,0,starmada,
+Time_Warp_Fugitives,invader,,0,0,0,0,0,0,0,0,,3,3,deck,,0,time_warp_fugitives,
+World_Eater,invader,,0,0,0,0,0,0,0,0,,7,7,deck,,0,world_eater,
+Solar_Flare,event,,0,0,0,0,0,0,0,0,damage_to_defenders,0,0,deck,,0,solar_flare,Random Defender suffers 1 hit
+Reinforcements,event,,0,0,0,0,0,0,0,0,return_discarded_defender,0,0,deck,,0,reinforcements,Return discarded/destroyed Defender to hand
+Lost_in_Space,event,,0,0,0,0,0,0,0,0,discard_defender,0,0,deck,,0,lost_in_space,Discard Defender from hand
+Supernova,event,,0,0,0,0,0,0,0,0,discard_hand,0,0,deck,,0,supernova,Discard hand
+Lab_Explosion,event,,0,0,0,0,0,0,0,0,destroy_structure,0,0,deck,,0,lab_explosion,Deals 1 damage to random building
+Core_Instabilities,event,,0,0,0,0,0,0,0,0,destroy_structure,0,0,deck,,0,core_instabilities,Deals 1 damage to random building
+Terraform,event,,0,0,0,0,0,0,0,0,increase_prod,0,0,deck,,0,terraform,All agrodomes income incresed by 2
+Black_Hole,event,,0,0,0,0,0,0,0,0,destroy_defender,0,0,deck,,0,black_hole,Destroy random Defender
+Emergency_Repairs,event,,0,0,0,0,0,0,0,0,eliminate_damage,0,0,deck,,0,emergency_repairs,Eliminate all damage to all buildings and Defenders
+Seismic_Events,event,,0,0,0,0,0,0,0,0,destroy_structure,0,0,deck,,0,seismic_events,Deals 1 damage to random building
+Intergalactic_War,event,,0,0,0,0,0,0,0,0,destroy_defender,0,0,deck,,0,intergalactic_war,Destroy random Defender
+Sabotage,event,,0,0,0,0,0,0,0,0,destroy_structure,0,0,deck,,0,sabotage,Deals 1 damage to random building
+Dilithium_Crystals,event,,0,0,0,0,0,0,0,0,gain_per_mine,0,0,deck,,0,dilithium_crystals,Gain 10 Megacredits per Mine
+Space_Traders,event,,0,0,0,0,0,0,0,0,gain_money_per_structure,0,0,deck,,0,space_traders,Gain 3 Megacredits per building
+Planet_Bombs,event,,0,0,0,0,0,0,0,0,destroy_structure,0,0,deck,,0,planet_bombs,Deals 1 damage to random building
+Meteor_Swarm,event,,0,0,0,0,0,0,0,0,destroy_structure,0,0,deck,,0,meteor_swarm,Deals 1 damage to random building
+Space_Virus,event,,0,0,0,0,0,0,0,0,destroy_defender,0,0,deck,,0,space_virus,Destroy random Defender
+Discovery,event,,0,0,0,0,0,0,0,0,gain_per_lab,0,0,deck,,0,discovery,If a Lab is in play gain 50 Megacredits
+Merchant_from_Venus,event,,0,0,0,0,0,0,0,0,gain_per_colony,0,0,deck,,0,merchant_from_venus,Gain 20 Megacredits per Colony
+Cosmic_Con_Artist,event,,0,0,0,0,0,0,0,0,halve_money,0,0,deck,,0,cosmic_con_artist,Lose 10 per Defender
+Interstellar_Tax_Men,event,,0,0,0,0,0,0,0,0,tax,0,0,deck,,0,interestellar_tax_men,Lose 2 Megacredits per building
+Repairs,event,,0,0,0,0,0,0,0,0,return_discarded_building,0,0,deck,,0,repairs,Return discarded/destroyed building to hand

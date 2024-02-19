@@ -183,6 +183,7 @@ class Main_window(QMainWindow):
         self.hand_frame.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.hand_frame.setLineWidth(2)
         
+        
         self.hand_info = QLabel(self)
         self.hand_info.setGeometry(QtCore.QRect(1005, 395, 228, 10))
         self.hand_info.setText("Your Hand")
@@ -539,8 +540,10 @@ class Main_window(QMainWindow):
     def drawphasefunction(self):
         self.info_phase_label.setText("Drawing Card - Event and Invaders will automatically be played in the next phase")
         self.control.drawphasefunction()
+        self.hand_frame.setStyleSheet("background-color: #7c005d")
         
     def spacekarmaphasefunction(self):
+        
         self.info_phase_label.setText("Space Karma Phase")
         happening = self.control.spacekarmaphasefunction()
         self.happening_label.setText(happening)
@@ -566,6 +569,7 @@ class Main_window(QMainWindow):
     def spacekarmaeventsphasefunction(self):
         
         self.info_phase_label.setText("Space Karma Phase - Invaders are played and Events are triggered at this moment")
+        self.hand_frame.setStyleSheet("background-color: #1E1E1E")
         happening = self.control.spacekarmaphasefunction()
         self.happening_label.setText(happening)
         eventsonwait = identifierextractor(self.db.invertedcardselector("placement", "event"))
@@ -892,7 +896,7 @@ class BuildedFrames(QFrame):
         icon="",
         width=106,
         height=106,
-        color="#1E1E1E",
+        color="transparent",
         
     ):
         QFrame.__init__(self, reference_frame)

@@ -93,6 +93,7 @@ class Control(DBControl):
         tableconstructor(self.conector)
         self.deck = cardextraction(self.cardpath)
         massiveloader(self.conector, self.deck)
+        self.megacredits = 0
     
     def drawphasefunction(self):
         #self.ui.info_phase_label.setText("Drawing Card")
