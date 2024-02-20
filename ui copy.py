@@ -516,20 +516,21 @@ class Main_window(QMainWindow):
      
                      
     def gameplay(self):
-        if self.counterturn == 11: self.counterturn = 1
+        if self.counterturn == 6: self.counterturn = 1
         
         if   self.counterturn == 0:  self.startgame()
         elif self.counterturn == 1:  self.drawphasefunction()
         elif self.counterturn == 2:  self.spacekarmaeventsphasefunction()
         #elif self.counterturn == 3:  self.eventphasefunction()
-        elif self.counterturn == 3:  self.battlepreparationfunction()
-        elif self.counterturn == 4:  self.battledefendersfunction()
-        elif self.counterturn == 5:  self.battlelassersfunction()
-        elif self.counterturn == 6:  self.battledomesfunction()
-        elif self.counterturn == 7:  self.battlebasefunction()
-        elif self.counterturn == 8:  self.buildphasefunction()
-        elif self.counterturn == 9: self.incomephasefunction()
-        elif self.counterturn == 10: self.handmaxcleaner()
+        #elif self.counterturn == 3:  self.battlepreparationfunction()
+        #elif self.counterturn == 4:  self.battledefendersfunction()
+        #elif self.counterturn == 5:  self.battlelassersfunction()
+        #elif self.counterturn == 6:  self.battledomesfunction()
+        #elif self.counterturn == 7:  self.battlebasefunction()
+        #elif self.counterturn == 8:  self.buildphasefunction()
+        elif self.counterturn == 3:  self.battlelauncherfunc()
+        elif self.counterturn == 4:  self.incomephasefunction()
+        elif self.counterturn == 5: self.handmaxcleaner()
         self.viewactualizer()
         self.counterturn += 1
         
@@ -541,7 +542,10 @@ class Main_window(QMainWindow):
     def drawphasefunction(self):
         self.info_phase_label.setText("Drawing Card - Event and Invaders will automatically be played in the next phase")
         self.control.drawphasefunction()
-        self.hand_frame.setStyleSheet("background-color: #808080")
+        
+        
+        
+        
         
     def spacekarmaphasefunction(self):
         
@@ -577,7 +581,7 @@ class Main_window(QMainWindow):
         if len(eventsonwait) > 0:    
             self.eventphasefunction()
         if len(self.db.invertedcardselector("placement","invader")) == 0:
-            self.counterturn += 5 
+            self.counterturn += 1 
         
          
         
@@ -588,11 +592,25 @@ class Main_window(QMainWindow):
         self.events_frame.hide()
         
         self.passturn_button.setEnabled(True)
+        self.passturn_button.setShortcut("Space")
         #self.counterturn -= 2
         self.gameplay()
     
     
-            
+    def battlelauncherfunc(self):
+        self.info_phase_label.setText("Battle Phase")   
+        self.happening_label.setText("Invaders are present")    
+        time.sleep(1)
+        self.battlepreparationfunction()
+        time.sleep(1)
+        self.battledefendersfunction()
+        time.sleep(1)
+        self.battlelassersfunction()
+        time.sleep(1)
+        self.battledomesfunction()
+        time.sleep(1)
+        self.battlebasefunction()
+        time.sleep(1)
     
     def battlepreparationfunction(self):
         
