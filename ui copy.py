@@ -104,6 +104,7 @@ class Main_window(QMainWindow):
         self.passturn_button.setStyleSheet("QWidget { background-color: white}")
         self.passturn_button.setText("New Game")
         self.passturn_button.clicked.connect(lambda:self.gameplay())
+        self.passturn_button.setShortcut("Space")
         
         
 
@@ -310,7 +311,7 @@ class Main_window(QMainWindow):
             pic = self.db.genericdatabasequery("SELECT pict FROM images WHERE id="+str(number))[0][0]
             descript = self.db.genericdatabasequery("SELECT descript FROM images WHERE id="+str(number))[0][0]
             self.info_pict.setPixmap(QtGui.QPixmap("images\\"+pic+".png"))
-            self.info_pict.setStyleSheet("background-color: white")
+            self.info_pict.setStyleSheet("background: white")
             card = self.db.cardselector(number)[0]
             
             self.cardname_label.setText("Card: "+card[1])
@@ -515,20 +516,21 @@ class Main_window(QMainWindow):
      
                      
     def gameplay(self):
-        if self.counterturn == 11: self.counterturn = 1
+        if self.counterturn == 6: self.counterturn = 1
         
         if   self.counterturn == 0:  self.startgame()
         elif self.counterturn == 1:  self.drawphasefunction()
         elif self.counterturn == 2:  self.spacekarmaeventsphasefunction()
         #elif self.counterturn == 3:  self.eventphasefunction()
-        elif self.counterturn == 3:  self.battlepreparationfunction()
-        elif self.counterturn == 4:  self.battledefendersfunction()
-        elif self.counterturn == 5:  self.battlelassersfunction()
-        elif self.counterturn == 6:  self.battledomesfunction()
-        elif self.counterturn == 7:  self.battlebasefunction()
-        elif self.counterturn == 8:  self.buildphasefunction()
-        elif self.counterturn == 9: self.incomephasefunction()
-        elif self.counterturn == 10: self.handmaxcleaner()
+        #elif self.counterturn == 3:  self.battlepreparationfunction()
+        #elif self.counterturn == 4:  self.battledefendersfunction()
+        #elif self.counterturn == 5:  self.battlelassersfunction()
+        #elif self.counterturn == 6:  self.battledomesfunction()
+        #elif self.counterturn == 7:  self.battlebasefunction()
+        #elif self.counterturn == 8:  self.buildphasefunction()
+        elif self.counterturn == 3:  self.battlelauncherfunc()
+        elif self.counterturn == 4:  self.incomephasefunction()
+        elif self.counterturn == 5: self.handmaxcleaner()
         self.viewactualizer()
         self.counterturn += 1
         
@@ -540,7 +542,10 @@ class Main_window(QMainWindow):
     def drawphasefunction(self):
         self.info_phase_label.setText("Drawing Card - Event and Invaders will automatically be played in the next phase")
         self.control.drawphasefunction()
-        self.hand_frame.setStyleSheet("background-color: #7c005d")
+        
+        
+        
+        
         
     def spacekarmaphasefunction(self):
         
@@ -577,7 +582,7 @@ class Main_window(QMainWindow):
         if len(eventsonwait) > 0:    
             self.eventphasefunction()
         if len(self.db.invertedcardselector("placement","invader")) == 0:
-            self.counterturn += 5 
+            self.counterturn += 1 
         
          
         
@@ -588,11 +593,25 @@ class Main_window(QMainWindow):
         self.events_frame.hide()
         
         self.passturn_button.setEnabled(True)
+        self.passturn_button.setShortcut("Space")
         #self.counterturn -= 2
         self.gameplay()
     
     
-            
+    def battlelauncherfunc(self):
+        self.info_phase_label.setText("Battle Phase")   
+        self.happening_label.setText("Invaders are present")    
+        time.sleep(1)
+        self.battlepreparationfunction()
+        time.sleep(1)
+        self.battledefendersfunction()
+        time.sleep(1)
+        self.battlelassersfunction()
+        time.sleep(1)
+        self.battledomesfunction()
+        time.sleep(1)
+        self.battlebasefunction()
+        time.sleep(1)
     
     def battlepreparationfunction(self):
         
@@ -647,6 +666,7 @@ class Main_window(QMainWindow):
         self.info_phase_label.setText("Building: Choose cards in hand to play")
         self.building_choose_frame.hide()
         self.passturn_button.setEnabled(True)
+        self.passturn_button.setShortcut("Space")
         for frames in self.hand_frame.findChildren(BuildedFrames):
             for label in frames.findChildren(LabelFrames):
                 if label.isVisible():
@@ -657,6 +677,7 @@ class Main_window(QMainWindow):
     def repairinbuilphase(self):
         self.info_phase_label.setText("Repairing: Choose building or Defender to eliminate damge from")
         self.passturn_button.setEnabled(True)
+        self.passturn_button.setShortcut("Space")
         self.building_choose_frame.hide()
         for frames in self.hand_frame.findChildren(BuildedFrames):
             for label in frames.findChildren(LabelFrames):
