@@ -14,8 +14,8 @@ from PyQt5.QtWidgets import (
     
 )
 
-from PyQt5.QtGui import QIcon, QPixmap, QPainter, QBrush, QPen, QMouseEvent, QHoverEvent, QFont
-from PyQt5.QtCore import Qt, QLine, QPointF, QRectF, QLine, QEvent
+from PyQt5.QtGui import QIcon, QPixmap, QPainter, QBrush, QPen, QMouseEvent, QHoverEvent, QFont, QColor,QPalette
+from PyQt5.QtCore import Qt, QLine, QPointF, QRectF, QLine, QEvent, QPropertyAnimation, pyqtProperty
 import sqlite3
 import random
 import sys
@@ -108,7 +108,7 @@ class Main_window(QMainWindow):
         
         
 
-        self.invaders_frame = QtWidgets.QFrame(self)
+        self.invaders_frame = AnimatedFrames(self)
         self.invaders_frame.setGeometry(QtCore.QRect(10, 80, 910, 178))
         self.invaders_frame.setStyleSheet("QWidget { background-color: #1E1E1E}")
         self.invaders_frame.setFrameShape(QtWidgets.QFrame.Box)
@@ -121,7 +121,7 @@ class Main_window(QMainWindow):
         self.invaders_info.setStyleSheet("color: red")
         
 
-        self.information_frame = QtWidgets.QFrame(self)
+        self.information_frame = AnimatedFrames(self)
         self.information_frame.setGeometry(QtCore.QRect(930, 40, 310, 218))
         self.information_frame.setStyleSheet("color: white; background-color: #1E1E1E")
         self.information_frame.setFrameShape(QtWidgets.QFrame.Box)
@@ -158,7 +158,7 @@ class Main_window(QMainWindow):
         #self.cardattr_label.setStyleSheet("color: white; background-color: blue")
         
 
-        self.defenders_frame = QtWidgets.QFrame(self)
+        self.defenders_frame = AnimatedFrames(self)
         self.defenders_frame.setGeometry(QtCore.QRect(10, 280, 1230, 100))
         self.defenders_frame.setStyleSheet("QWidget { background-color: #1E1E1E}")
         self.defenders_frame.setFrameShape(QtWidgets.QFrame.Box)
@@ -170,25 +170,27 @@ class Main_window(QMainWindow):
         self.defenders_info.setText("Defenders")
         self.defenders_info.setStyleSheet("color: green")
 
-        self.base_frame = QtWidgets.QFrame(self)
+        self.base_frame = AnimatedFrames(self)
         self.base_frame.setGeometry(QtCore.QRect(10, 390, 958, 534))
         self.base_frame.setStyleSheet("QWidget { background-color: #1E1E1E}")
         self.base_frame.setFrameShape(QtWidgets.QFrame.Box)
         self.base_frame.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.base_frame.setLineWidth(2)
 
-        self.hand_frame = QtWidgets.QFrame(self)
+        self.hand_frame = AnimatedFrames(self)
         self.hand_frame.setGeometry(QtCore.QRect(1000, 410, 228, 558))
-        self.hand_frame.setStyleSheet("QWidget { background-color: #1E1E1E}")
+        #self.hand_frame.setStyleSheet("QWidget { background-color: #1E1E1E}")
         self.hand_frame.setFrameShape(QtWidgets.QFrame.Box)
         self.hand_frame.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.hand_frame.setLineWidth(2)
+        self.hand_frame.setcolor(QColor("red"))
         
         
         self.hand_info = QLabel(self)
         self.hand_info.setGeometry(QtCore.QRect(1005, 395, 228, 10))
         self.hand_info.setText("Your Hand")
         self.hand_info.setStyleSheet("color: white")
+        
         
         self.events_frame = QFrame(self)
         self.events_frame.setGeometry(QtCore.QRect(425, 250, 300, 350))
@@ -543,6 +545,12 @@ class Main_window(QMainWindow):
         self.info_phase_label.setText("Drawing Card - Event and Invaders will automatically be played in the next phase")
         self.control.drawphasefunction()
         
+        self.colorchangedraw = QPropertyAnimation(self.hand_frame, b"color")
+        self.colorchangedraw.setDuration(500)
+        self.colorchangedraw.setLoopCount(2)
+        #self.colorchangedraw.setStartValue(QColor(31, 31, 31))
+        self.colorchangedraw.setEndValue(QColor("red"))
+        self.colorchangedraw.start()
         
         
         
@@ -938,7 +946,16 @@ class BuildedFrames(QFrame):
         self.setObjectName(self.identif)
 
         self.setMouseTracking(True)
+
+class AnimatedFrames(QFrame):
+    def __init__(self, parent):
+        super().__init__(parent)  
         
+    def setcolor(self, col):
+        palette = self.palette()
+        palette.setColor(self.backgroundRole(), col)
+        self.setPalette(palette)
+    color = pyqtProperty(QColor, fset=setcolor)    
 
 
 class LabelFrames(QLabel):
