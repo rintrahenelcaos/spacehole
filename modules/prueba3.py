@@ -22,15 +22,16 @@ class Widget(QtWidgets.QMainWindow):
     def __init__(self):
         super(Widget, self).__init__()
 
-        self.button = QtWidgets.QFrame()
+        self.button = QtWidgets.QFrame(self)
         self.button.setGeometry(QtCore.QRect(0,0, 60,60))
 
-        lay = QtWidgets.QVBoxLayout(self)
-        lay.addWidget(self.button)
+        #lay = QtWidgets.QVBoxLayout(self)
+        #lay.addWidget(self.button)
 
         timer = QtCore.QTimer(self, interval=5 * 1000)
         timer.timeout.connect(self.handle_timeout)
         timer.start()
+        
         self.handle_timeout()
 
     def handle_timeout(self):

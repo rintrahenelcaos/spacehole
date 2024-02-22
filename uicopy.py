@@ -1,3 +1,4 @@
+import functools
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtWidgets import (
     QMainWindow,
@@ -108,7 +109,7 @@ class Main_window(QMainWindow):
         
         
 
-        self.invaders_frame = AnimatedFrames(self)
+        self.invaders_frame = QFrame(self)
         self.invaders_frame.setGeometry(QtCore.QRect(10, 80, 910, 178))
         self.invaders_frame.setStyleSheet("QWidget { background-color: #1E1E1E}")
         self.invaders_frame.setFrameShape(QtWidgets.QFrame.Box)
@@ -121,7 +122,7 @@ class Main_window(QMainWindow):
         self.invaders_info.setStyleSheet("color: red")
         
 
-        self.information_frame = AnimatedFrames(self)
+        self.information_frame = QFrame(self)
         self.information_frame.setGeometry(QtCore.QRect(930, 40, 310, 218))
         self.information_frame.setStyleSheet("color: white; background-color: #1E1E1E")
         self.information_frame.setFrameShape(QtWidgets.QFrame.Box)
@@ -158,7 +159,7 @@ class Main_window(QMainWindow):
         #self.cardattr_label.setStyleSheet("color: white; background-color: blue")
         
 
-        self.defenders_frame = AnimatedFrames(self)
+        self.defenders_frame = QFrame(self)
         self.defenders_frame.setGeometry(QtCore.QRect(10, 280, 1230, 100))
         self.defenders_frame.setStyleSheet("QWidget { background-color: #1E1E1E}")
         self.defenders_frame.setFrameShape(QtWidgets.QFrame.Box)
@@ -170,20 +171,20 @@ class Main_window(QMainWindow):
         self.defenders_info.setText("Defenders")
         self.defenders_info.setStyleSheet("color: green")
 
-        self.base_frame = AnimatedFrames(self)
+        self.base_frame = QFrame(self)
         self.base_frame.setGeometry(QtCore.QRect(10, 390, 958, 534))
         self.base_frame.setStyleSheet("QWidget { background-color: #1E1E1E}")
         self.base_frame.setFrameShape(QtWidgets.QFrame.Box)
         self.base_frame.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.base_frame.setLineWidth(2)
 
-        self.hand_frame = AnimatedFrames(self)
+        self.hand_frame = QFrame(self)
         self.hand_frame.setGeometry(QtCore.QRect(1000, 410, 228, 558))
-        #self.hand_frame.setStyleSheet("QWidget { background-color: #1E1E1E}")
+        self.hand_frame.setStyleSheet("QWidget { background-color: #1E1E1E}")
         self.hand_frame.setFrameShape(QtWidgets.QFrame.Box)
         self.hand_frame.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.hand_frame.setLineWidth(2)
-        self.hand_frame.setcolor(QColor("red"))
+        
         
         
         self.hand_info = QLabel(self)
@@ -281,6 +282,9 @@ class Main_window(QMainWindow):
         self.happening_label.setGeometry(QtCore.QRect(10, 930, 790, 20))
         self.happening_label.setText("")
         self.happening_label.setStyleSheet("color: white")
+        
+        self.timer = QtCore.QTimer(self)
+        
         
         
         # layouts and grids
@@ -518,21 +522,22 @@ class Main_window(QMainWindow):
      
                      
     def gameplay(self):
-        if self.counterturn == 6: self.counterturn = 1
+        if self.counterturn == 11: self.counterturn = 1
         
         if   self.counterturn == 0:  self.startgame()
         elif self.counterturn == 1:  self.drawphasefunction()
         elif self.counterturn == 2:  self.spacekarmaeventsphasefunction()
         #elif self.counterturn == 3:  self.eventphasefunction()
-        #elif self.counterturn == 3:  self.battlepreparationfunction()
-        #elif self.counterturn == 4:  self.battledefendersfunction()
-        #elif self.counterturn == 5:  self.battlelassersfunction()
-        #elif self.counterturn == 6:  self.battledomesfunction()
-        #elif self.counterturn == 7:  self.battlebasefunction()
-        #elif self.counterturn == 8:  self.buildphasefunction()
-        elif self.counterturn == 3:  self.battlelauncherfunc()
-        elif self.counterturn == 4:  self.incomephasefunction()
-        elif self.counterturn == 5: self.handmaxcleaner()
+        elif self.counterturn == 3:  self.battlepreparationfunction()
+        elif self.counterturn == 4:  self.battledefendersfunction()
+        elif self.counterturn == 5:  self.battlelassersfunction()
+        elif self.counterturn == 6:  self.battledomesfunction()
+        elif self.counterturn == 7:  self.battlebasefunction()
+        
+        #elif self.counterturn == 8:  self.battlelauncherfunc()
+        elif self.counterturn == 8:  self.buildphasefunction()
+        elif self.counterturn == 9:  self.incomephasefunction()
+        elif self.counterturn == 10: self.handmaxcleaner()
         self.viewactualizer()
         self.counterturn += 1
         
@@ -544,13 +549,19 @@ class Main_window(QMainWindow):
     def drawphasefunction(self):
         self.info_phase_label.setText("Drawing Card - Event and Invaders will automatically be played in the next phase")
         self.control.drawphasefunction()
+        """
+        timer = QtCore.QTimer(self, interval=5 * 1000)
+        timer.timeout.connect(self.handle_timeout)
+        timer.start()
         
-        self.colorchangedraw = QPropertyAnimation(self.hand_frame, b"color")
-        self.colorchangedraw.setDuration(500)
-        self.colorchangedraw.setLoopCount(2)
-        #self.colorchangedraw.setStartValue(QColor(31, 31, 31))
-        self.colorchangedraw.setEndValue(QColor("red"))
-        self.colorchangedraw.start()
+        self.handle_timeout(self.hand_frame)"""
+        apply_color_animation(self.hand_frame, QtGui.QColor("white"), QtGui.QColor("#1E1E1E"), duration=2500)
+        
+        self.timer.setInterval(2500)
+        self.timer.start()
+        self.timer.timeout.connect(lambda: apply_color_animation(self.hand_frame, QtGui.QColor("white"), QtGui.QColor("#1E1E1E"), duration=2500))
+        #timer = QtCore.QTimer(self)
+        
         
         
         
@@ -580,7 +591,7 @@ class Main_window(QMainWindow):
         else: self.happening_label.setText("No events happening now")
             
     def spacekarmaeventsphasefunction(self):
-        
+        self.timer.stop()
         self.info_phase_label.setText("Space Karma Phase - Invaders are played and Events are triggered at this moment")
         
         
@@ -590,7 +601,7 @@ class Main_window(QMainWindow):
         if len(eventsonwait) > 0:    
             self.eventphasefunction()
         if len(self.db.invertedcardselector("placement","invader")) == 0:
-            self.counterturn += 1 
+            self.counterturn = 7 
         
          
         
@@ -608,18 +619,18 @@ class Main_window(QMainWindow):
     
     def battlelauncherfunc(self):
         self.info_phase_label.setText("Battle Phase")   
-        self.happening_label.setText("Invaders are present")    
-        time.sleep(1)
+        self.happening_label.setText("Invaders are present")  
+                
         self.battlepreparationfunction()
-        time.sleep(1)
+        
         self.battledefendersfunction()
-        time.sleep(1)
+        
         self.battlelassersfunction()
-        time.sleep(1)
+        
         self.battledomesfunction()
-        time.sleep(1)
+        
         self.battlebasefunction()
-        time.sleep(1)
+        
     
     def battlepreparationfunction(self):
         
@@ -655,10 +666,6 @@ class Main_window(QMainWindow):
         #self.passturn_button.setEnabled(True)
     
     
-    def buildphasefunctiontester(self):
-        self.info_phase_label.setText("Build Phase 2")
-        #self.control.buildphasefunctiontester()
-        
     def buildphasefunction(self):
         self.info_phase_label.setText("Build Phase - choose either to build or repair. Phase can be pass after choosing")
         
@@ -672,6 +679,13 @@ class Main_window(QMainWindow):
         
     def buildingbuildphase(self):
         self.info_phase_label.setText("Building: Choose cards in hand to play")
+        apply_color_animation(self.hand_frame, QtGui.QColor("white"), QtGui.QColor("#1E1E1E"), duration=2500)
+        apply_color_animation(self.base_frame, QtGui.QColor("white"), QtGui.QColor("#1E1E1E"), duration=2500)
+        #timer.singleShot(5000)
+        self.timer.setInterval(2500)
+        self.timer.start()
+        self.timer.timeout.connect(lambda: apply_color_animation(self.base_frame, QtGui.QColor("white"), QtGui.QColor("#1E1E1E"), duration=2500))
+        
         self.building_choose_frame.hide()
         self.passturn_button.setEnabled(True)
         self.passturn_button.setShortcut("Space")
@@ -766,6 +780,7 @@ class Main_window(QMainWindow):
         self.control.powerphasefunction()
         
     def incomephasefunction(self):
+        self.timer.stop()
         self.info_phase_label.setText("Income Phase - Megacredits from buildings in play are added")
         #self.pass_build.setEnabled(False)
         for frame in self.base_frame.findChildren(BuildedFrames):
@@ -830,7 +845,13 @@ class Main_window(QMainWindow):
         self.handmaxcleaner()
         self.happening_label.setText(ident + " discarded")
                       
-                
+    def handle_timeout(self, refereneceframe):
+        apply_color_animation(
+            refereneceframe,
+            QtGui.QColor("lightgreen"),
+            QtGui.QColor("darkgreen"),
+            duration=2500,
+        )            
         
     
         
@@ -858,7 +879,20 @@ def passer(imprimir = "eventopressed"):
 def passer2(*args):
     print("2nd func")
     
+def helper_function(widget, color):
+    widget.setStyleSheet("background-color: {}".format(color.name()))
 
+
+def apply_color_animation(widget, start_color, end_color, duration=1000, loops=1):
+    anim = QtCore.QVariantAnimation(
+        widget,
+        duration=duration,
+        startValue=start_color,
+        endValue=end_color,
+        loopCount=loops,
+    )
+    anim.valueChanged.connect(functools.partial(helper_function, widget))
+    anim.start(QtCore.QAbstractAnimation.DeleteWhenStopped)
     
 
 
