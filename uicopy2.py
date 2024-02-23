@@ -59,6 +59,51 @@ class Main_window(QMainWindow):
                              [94,10],[94,100],[94,190],[94,280],[94,370],[94,460],[94,550],[94,640],[94,730],[94,820]]
         
         self.defendersgrid = [[10,20],[10,120],[10,220],[10,320],[10,420],[10,520],[10,620],[10,720],[10,820],[10,920],[10,1020]]
+        
+        self.handgrid = [[6,6], [6,116], [116,6], [116,116], [226,6], [226,116], [336,6], [336,116], [446,6], [446,116]]
+        
+        self.buildgrid = [[2, 108, "Laser_Turret0"],
+                          [2, 214, "Laser_Turret1"],
+                          [2, 320, "Force_Dome0"],
+                          [2, 426, "Laser_Turret2"],
+                          [2, 532, "Force_Dome1"],
+                          [2, 638, "Laser_Turret3"],
+                          [108, 2, "Mine0"],
+                          [108, 108, "Solar_Array0"],
+                          [108, 214, "Solar_Array1"],
+                          [108, 320, "Solar_Array2"],
+                          [108, 426, "Solar_Array3"],
+                          [108, 532, "Solar_Array4"],
+                          [108, 638, "Solar_Array5"],
+                          [108, 744, "Solar_Array6"],
+                          [108, 850, "Mine1"],
+                          [214, 2, "Mine2"],
+                          [214, 108, "Agrodome0"],
+                          [214, 214, "Starport0"],
+                          [214, 320, "Stargate0"],
+                          [214, 426, "Research_Labs0"],
+                          [214, 532, "Research_Labs1"],
+                          [214, 638, "Refinery0"],
+                          [214, 744, "Agrodome1"],
+                          [214, 850, "Mine3"],
+                          [320, 2, "Mine4"],
+                          [320, 108, "Agrodome2"],
+                          [320, 214, "Colony0"],
+                          [320, 320, "Colony1"],
+                          [320, 426, "Command_Center0"],
+                          [320, 532, "Refinery1"],
+                          [320, 638, "Refinery2"],
+                          [320, 744, "Agrodome3"],
+                          [320, 850, "Mine5"],
+                          [426, 2, "Mine6"],
+                          [426, 108, "Agrodome4"],
+                          [426, 214, "Colony2"],
+                          [426, 320, "Colony3"],
+                          [426, 426, "Base0"],
+                          [426, 532, "Factory0"],
+                          [426, 638, "Refinery3"],
+                          [426, 744, "Agrodome5"],
+                          [426, 850, "Mine7"]]
 
         self.initUI()
         
@@ -306,21 +351,309 @@ class Main_window(QMainWindow):
         deck = identifierextractor(self.db.genericdatabasequery("SELECT id from deck"))
         print(deck)
         for ident in deck:
-            pict = self.db.genericdatabasequery("SELECT pict FROM images")
-            card =LabelFrames(self,0,0,str(ident),self.information_frame,"")
+            pict = self.db.genericdatabasequery("SELECT pict FROM images WHERE id="+str(ident))[0][0]
+            name = self.db.cardselector(ident)[0][1]
+            print(pict)
+            card = LabelFrames(self,0,0,name,self.infoframeshow,"images\\"+pict+".png")
             card.hide()
+            
+        
+            
+            
     
     
     
     
-    def gameplay(self): 
-        pass   
+     
         
     
     def infoframeshow(self):
         self.information_frame.show()
     def infoframehide(self):
         self.information_frame.hide()
+        
+    def infoframeshow(self, identif, *args): # <--- Shows information of hoovered card
+        
+        if identif != "":
+            
+            self.information_frame.show()
+            number = identifierextractor(self.db.invertedcardselector("card",identif))[0]
+            pic = self.db.genericdatabasequery("SELECT pict FROM images WHERE id="+str(number))[0][0]
+            descript = self.db.genericdatabasequery("SELECT descript FROM images WHERE id="+str(number))[0][0]
+            self.info_pict.setPixmap(QtGui.QPixmap("images\\"+pic+".png"))
+            self.info_pict.setStyleSheet("background: white")
+            card = self.db.cardselector(number)[0]
+            
+            self.cardname_label.setText("Card: "+card[1])
+            self.cardtype_label.setText("Type: "+card[2])
+            self.cardforce_label.setText("Force: "+str(card[12]))
+            self.cardhits_label.setText("Hits: "+str(card[13]-card[16]))
+            self.cardattr_label.setText("Attr: "+descript)
+            
+        
+        else: 
+            
+            self.information_frame.show()
+            self.info_pict.setPixmap(QtGui.QPixmap(""))
+            self.info_pict.setStyleSheet("background-color: transparent")
+            self.cardname_label.setText("Card: "+"")
+            self.cardtype_label.setText("Type: "+"")
+            self.cardforce_label.setText("Force: "+"")
+            self.cardhits_label.setText("Hits: "+"")
+            self.cardattr_label.setText("Attr: "+"")
+            
+    def handassigner(self):
+        handcopy = self.handgrid.copy()
+        inhand = identifierextractor(self.db.invertedcardselector("placement", "hand"))
+        for pos in range(len(inhand)):
+            card = self.db.cardselector(str(inhand[pos]))[0][1]
+            position = handcopy[pos]
+            
+            label = self.findChildren(LabelFrames, card)[0]
+            
+            label.setParent(self.hand_frame)
+            label.ypos = position[0]
+            label.xpos = position[1]
+            label.setGeometry(QtCore.QRect(position[1], position[0], 106, 106))
+            label.show()
+            label.setStyleSheet("background-color: white")
+    
+    def handcleaner(self):
+        tocleanhand = self.hand_frame.findChildren(LabelFrames)
+        for toclean in  tocleanhand:
+            toclean.setParent(self)
+            toclean.hide()
+            
+    def genericassigner(self, referenceframe, referencegrid, placementcode, size, color):
+        gridcopy = referencegrid.copy()
+        inplace = identifierextractor(self.db.invertedcardselector("placement", placementcode))
+        for pos in range(len(inplace)):
+            card = self.db.cardselector(str(inplace[pos]))[0][1]   
+            position = gridcopy[pos]
+            
+            label = self.findChildren(LabelFrames, card)[0]
+            
+            label.setParent(referenceframe)
+            label.setGeometry(QtCore.QRect(position[1], position[0], size, size))
+            label.show()
+            label.setStyleSheet("background-color: "+color)
+            
+    def genericframecleaner(self, referenceframe):
+        tocleanlabels = referenceframe.findChildren(LabelFrames)
+        for toclean in tocleanlabels:
+            toclean.setParent(self)
+            toclean.hide()
+            
+    def buildassigner(self):
+        
+        builded = identifierextractor(self.db.invertedcardselector("placement", "builded"))
+        
+        for building in builded:
+            card = self.db.cardselector(building)[0][1]
+            label = self.findChildren(LabelFrames, card)[0]
+            for pos in self.buildgrid:
+                if card == pos[2]:
+                    label.setParent(self.base_frame)
+                    label.setGeometry(QtCore.QRect(pos[1], pos[0], 106, 106))
+                    label.show()
+                    label.setStyleSheet("background-color: grey")
+    
+    def buildcleaner(self):
+        toclean = self.base_frame.findChildren(LabelFrames)
+        
+        for cleanbuild in toclean:
+            cleanbuild.setParent(self)
+            cleanbuild.hide()
+                            
+                    
+            
+    def viewactualizer(self):
+        self.handcleaner()
+        self.handassigner()
+        self.genericframecleaner(self.invaders_frame)
+        self.genericassigner(self.invaders_frame, self.invadersgrid, "invader", 80, "red")
+        self.genericframecleaner(self.defenders_frame)
+        self.genericassigner(self.defenders_frame, self.defendersgrid, "defending", 90, "green")
+        self.buildcleaner()
+        self.buildassigner()
+        
+        
+        if self.db.cardselector(1)[0][14] == "discard":
+            self.communication_label_mega.setText("Megacredits = "+str(self.control.megacredits))
+            self.communication_frame.show()
+            self.passturn_button.setEnabled(False)
+        if len(identifierextractor(self.db.invertedcardselector("placement","deck"))) == 0:
+            self.communication_label2.setText("VICTORY")
+            self.communication_label.setText("End of game")
+            self.communication_label_mega.setText("Megacredits = "+str(self.control.megacredits))
+            self.communication_frame.show()
+            self.passturn_button.setEnabled(False)
+        
+    
+    # Game Mechanics
+    
+    
+    
+    
+    def gameplay(self): 
+        if self.counterturn == 8: self.counterturn = 1 
+        
+        if   self.counterturn == 0:  self.startgame()
+        elif self.counterturn == 1:  self.drawphasefunction()
+        elif self.counterturn == 2:  self.spacekarmaeventsphasefunction()
+        elif self.counterturn == 3:  self.battlepreparationfunction()
+        elif self.counterturn == 4:  self.battledefendersfunction()
+        elif self.counterturn == 5:  self.battlelassersfunction()
+        elif self.counterturn == 6:  self.battledomesfunction()
+        elif self.counterturn == 7:  self.battlebasefunction()
+        
+        
+        self.viewactualizer()
+        self.counterturn += 1
+    
+    def startgame(self):
+        
+        self.passturn_button.setText("Next Phase")
+        self.passturn_button.setEnabled(True)
+        self.control.restarter()
+        self.viewactualizer()
+        self.communication_frame.hide()
+        self.info_phase_label.setText("New game starting")
+        self.control.startgame()        
+    
+    def restart(self):
+        self.passturn_button.setText("Start Game")
+        self.passturn_button.setEnabled(True)
+        self.control.restarter()
+        self.viewactualizer()
+        self.communication_frame.hide()
+        self.info_phase_label.setText("New game starting")
+        self.counterturn = 0   
+    
+    def drawphasefunction(self):
+        self.info_phase_label.setText("Drawing Card - Event and Invaders will automatically be played in the next phase")
+        self.control.drawphasefunction()
+        """
+        timer = QtCore.QTimer(self, interval=5 * 1000)
+        timer.timeout.connect(self.handle_timeout)
+        timer.start()
+        
+        self.handle_timeout(self.hand_frame)"""
+        apply_color_animation(self.hand_frame, QtGui.QColor("white"), QtGui.QColor("#1E1E1E"), duration=2500)
+        
+        self.timer.setInterval(2500)
+        self.timer.start()
+        self.timer.timeout.connect(lambda: apply_color_animation(self.hand_frame, QtGui.QColor("white"), QtGui.QColor("#1E1E1E"), duration=2500))
+        #timer = QtCore.QTimer(self)
+        
+    def spacekarmaeventsphasefunction(self):
+        self.timer.stop()
+        self.info_phase_label.setText("Space Karma Phase - Invaders are played and Events are triggered at this moment")
+        
+        
+        happening = self.control.spacekarmaphasefunction()
+        self.happening_label.setText(happening)
+        eventsonwait = identifierextractor(self.db.invertedcardselector("placement", "event"))
+        if len(eventsonwait) > 0:    
+            self.eventphasefunction()
+        if len(self.db.invertedcardselector("placement","invader")) == 0:
+            self.counterturn = 0 
+            
+    def eventphasefunction(self):
+        #self.info_phase_label.setText("Events Phase")
+        eventsonwait = identifierextractor(self.db.invertedcardselector("placement", "event"))
+        """if len(self.db.invertedcardselector("placement","invader")) == 0:
+            self.counterturn += 5"""
+        #else:pass
+        if len(eventsonwait) > 0:
+            number = eventsonwait[0]
+            self.passturn_button.setEnabled(False)
+            self.event_pict.setPixmap(QtGui.QPixmap("images\\"+self.db.genericdatabasequery("SELECT pict FROM images WHERE id="+str(number))[0][0]+".png"))
+            self.eventcard_label.setText("Card: "+self.db.cardselector(number)[0][1])
+            self.eventtype_label.setText("Type: Event")
+            self.eventattr_label.setText("Attr: "+self.db.genericdatabasequery("SELECT descript FROM images WHERE id="+str(number))[0][0])
+            self.events_frame.show()
+            self.happening_label.setText("The event: "+self.db.cardselector(number)[0][1]+" has taken place")
+             
+        else: self.happening_label.setText("No events happening now") 
+        
+    def eventok(self):
+        self.control.eventphasefunction()
+        self.events_frame.hide()
+        
+        self.passturn_button.setEnabled(True)
+        self.passturn_button.setShortcut("Space")
+        #self.counterturn -= 2
+        self.gameplay()
+        
+    def battlepreparationfunction(self):
+        
+        #self.passturn_button.setEnabled(False)
+        self.info_phase_label.setText("Battle Preparations Phase")
+        happen = self.control.battlepreparationfunction()
+        self.happening_label.setText(happen)
+        
+        """if len(self.db.invertedcardselector("placement","invader")) == 0:
+            self.counterturn += 4"""
+    
+    def battledefendersfunction(self):
+        self.info_phase_label.setText("Battle vs Defenders Phase")
+        happen = self.control.battledefendersfunction()
+        self.happening_label.setText(happen) 
+       
+    def battlelassersfunction(self):
+        self.info_phase_label.setText("Battle vs Lassers Phase")
+        happen = self.control.battlelassersfunction()
+        self.happening_label.setText(happen) 
+    
+    def battledomesfunction(self):
+        self.info_phase_label.setText("Battle vs Domes Phase")
+        happen = self.control.battledomesfunction()
+        self.happening_label.setText(happen) 
+        
+        
+    def battlebasefunction(self):
+        self.info_phase_label.setText("Battle vs Base Phase")
+        happen = self.control.battlebasefunction()
+        self.happening_label.setText(happen) 
+        #self.viewactualizer()
+        #self.passturn_button.setEnabled(True)
+        
+    def buildphasefunction(self):
+        self.info_phase_label.setText("Build Phase - choose either to build or repair. Phase can be pass after choosing")
+        
+        self.passturn_button.setEnabled(False)
+        self.building_choose_frame.show()
+        self.choosing_button_2.setText("Build")
+        self.choosing_button_2.clicked.connect(lambda: self.buildingbuildphase())
+        self.choosing_button.setText("Repair")
+        self.choosing_button.clicked.connect(lambda: self.repairinbuilphase())
+    
+    def buildingbuildphase(self):
+        self.info_phase_label.setText("Building: Choose cards in hand to play")
+        apply_color_animation(self.hand_frame, QtGui.QColor("white"), QtGui.QColor("#1E1E1E"), duration=2500)
+        apply_color_animation(self.base_frame, QtGui.QColor("white"), QtGui.QColor("#1E1E1E"), duration=2500)
+        #timer.singleShot(5000)
+        self.timer.setInterval(2500)
+        self.timer.start()
+        self.timer.timeout.connect(lambda: apply_color_animation(self.base_frame, QtGui.QColor("white"), QtGui.QColor("#1E1E1E"), duration=2500))
+        
+        self.building_choose_frame.hide()
+        self.passturn_button.setEnabled(True)
+        self.passturn_button.setShortcut("Space")
+        
+        for label in self.hand_frame.findChildren(LabelFrames):
+            label.asociatedfunc = self.building
+            self.viewactualizer()
+            
+    def building(self, ident):
+    
+        identificator = identifierextractor(self.db.invertedcardselector("card", ident))[0]
+        happen = self.control.building(identificator)
+        self.happening_label.setText(happen)
+        self.viewactualizer()
+        self.buildingbuildphase()
+         
         
         
 def passer(imprimir = "eventopressed"):
@@ -424,6 +757,20 @@ def returner(asociated):
     
 def passer2(*args):
     print("2nd func")
+    
+def helper_function(widget, color):
+    widget.setStyleSheet("background-color: {}".format(color.name()))
+    
+def apply_color_animation(widget, start_color, end_color, duration=1000, loops=1):
+    anim = QtCore.QVariantAnimation(
+        widget,
+        duration=duration,
+        startValue=start_color,
+        endValue=end_color,
+        loopCount=loops,
+    )
+    anim.valueChanged.connect(functools.partial(helper_function, widget))
+    anim.start(QtCore.QAbstractAnimation.DeleteWhenStopped)
 
 
 
