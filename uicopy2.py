@@ -457,6 +457,8 @@ class Main_window(QMainWindow):
                     label.setGeometry(QtCore.QRect(pos[1], pos[0], 106, 106))
                     label.show()
                     label.setStyleSheet("background-color: grey")
+                    #label.asociatedfunc = self.deletedamage
+                    #label.button.setEnabled(False)
     
     def buildcleaner(self):
         toclean = self.base_frame.findChildren(LabelFrames)
@@ -476,6 +478,7 @@ class Main_window(QMainWindow):
         self.genericassigner(self.defenders_frame, self.defendersgrid, "defending", 90, "green")
         self.buildcleaner()
         self.buildassigner()
+        self.megacredits_label.setText("Megacredits: $"+str(self.control.megacredits))
         
         
         if self.db.cardselector(1)[0][14] == "discard":
@@ -496,7 +499,7 @@ class Main_window(QMainWindow):
     
     
     def gameplay(self): 
-        if self.counterturn == 8: self.counterturn = 1 
+        if self.counterturn == 11: self.counterturn = 1 
         
         if   self.counterturn == 0:  self.startgame()
         elif self.counterturn == 1:  self.drawphasefunction()
@@ -506,7 +509,9 @@ class Main_window(QMainWindow):
         elif self.counterturn == 5:  self.battlelassersfunction()
         elif self.counterturn == 6:  self.battledomesfunction()
         elif self.counterturn == 7:  self.battlebasefunction()
-        
+        elif self.counterturn == 8:  self.buildphasefunction()
+        elif self.counterturn == 9:  self.incomephasefunction()
+        elif self.counterturn == 10: self.handmaxcleaner()
         
         self.viewactualizer()
         self.counterturn += 1
@@ -557,7 +562,7 @@ class Main_window(QMainWindow):
         if len(eventsonwait) > 0:    
             self.eventphasefunction()
         if len(self.db.invertedcardselector("placement","invader")) == 0:
-            self.counterturn = 0 
+            self.counterturn = 7 
             
     def eventphasefunction(self):
         #self.info_phase_label.setText("Events Phase")
@@ -653,6 +658,92 @@ class Main_window(QMainWindow):
         self.happening_label.setText(happen)
         self.viewactualizer()
         self.buildingbuildphase()
+        
+    def repairinbuilphase(self):
+        self.info_phase_label.setText("Repairing: Choose building or Defender to eliminate damge from")
+        self.passturn_button.setEnabled(True)
+        self.passturn_button.setShortcut("Space")
+        self.building_choose_frame.hide()
+        
+        for label in self.hand_frame.findChildren(LabelFrames):
+            label.asociatedfunc = passer
+        print(self.base_frame.findChildren(LabelFrames))
+        for built in self.base_frame.findChildren(LabelFrames):
+            print(built)
+            built.asociatedfunc = self.deletedamage
+            print(built.asociatedfunc)
+            
+        for defender in self.defenders_frame.findChildren(LabelFrames):
+            defender.asociatedfunc = self.deletedamage
+        
+        self.viewactualizer()
+    
+    def deletedamage(self, ident):
+        
+        print("deletadamage")
+        identificator = identifierextractor(self.db.invertedcardselector("card", ident))[0]
+        self.db.tablemodifier(identificator, "hitted", "0")
+        self.viewactualizer()
+        
+        for built in self.base_frame.findChildren(LabelFrames):
+            built.asociatedfunc = passer
+            
+        for defender in self.defenders_frame.findChildren(LabelFrames):
+            defender.asociatedfunc = passer
+        
+        self.happening_label.setText("All damage dealt to "+ident+" repaired")
+        self.gameplay()
+        #self.viewactualizer()
+        
+    def incomephasefunction(self):
+        self.timer.stop()
+        self.info_phase_label.setText("Income Phase - Megacredits from buildings in play are added")
+        #self.pass_build.setEnabled(False)
+        
+        for built in self.base_frame.findChildren(LabelFrames):
+            built.asociatedfunc = passer
+        
+        for defender in self.defenders_frame.findChildren(LabelFrames):
+            defender.asociatedfunc = passer
+            
+        for label in self.hand_frame.findChildren(LabelFrames):
+            label.asociatedfunc = passer
+        
+        self.control.incomephasefunction()
+    
+    def handmaxcleaner(self):
+        self.info_phase_label.setText("Handclean Phase - excess of cards over the maximun allowed must be discarded")
+        
+        
+        if self.db.cardselector(36)[0][14] == "builded":
+            handmax = 7
+        else: handmax = 5
+        
+        inhandcount = len(identifierextractor(self.db.invertedcardselector("placement", "hand")))
+        if inhandcount > handmax:
+            
+            for label in self.hand_frame.findChildren(LabelFrames):
+                label.asociatedfunc = self.discardextra
+            self.passturn_button.setEnabled(False) 
+            self.happening_label.setText("Number of cards in hand excedes the maximun allowed, choose card to discard")
+               
+            
+        else: 
+            
+            for label in self.hand_frame.findChildren(LabelFrames):
+                label.asociatedfunc = passer
+            self.happening_label.setText("No need to discard")
+            self.passturn_button.setEnabled(True)
+    
+    def discardextra(self, ident):
+        identificator = identifierextractor(self.db.invertedcardselector("card", ident))[0]
+        self.db.tablemodifier(identificator, "placement", "discard")
+        self.viewactualizer()
+        self.happening_label.setText(ident + " discarded")
+        self.handmaxcleaner()
+        
+                
+            
          
         
         
