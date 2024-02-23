@@ -149,7 +149,7 @@ class Main_window(QMainWindow):
         self.passturn_button.setGeometry(QtCore.QRect(800, 920, 100, 50))
         self.passturn_button.setStyleSheet("QWidget { background-color: white}")
         self.passturn_button.setText("New Game")
-        self.passturn_button.clicked.connect(lambda:self.visualactualizer())
+        self.passturn_button.clicked.connect(lambda:self.gameplay())
         self.passturn_button.setShortcut("Space")
         
         
@@ -355,11 +355,7 @@ class Main_window(QMainWindow):
             name = self.db.cardselector(ident)[0][1]
             print(pict)
             card = LabelFrames(self,0,0,name,self.infoframeshow,"images\\"+pict+".png")
-<<<<<<< HEAD
             card.hide()
-=======
-            #card.hide()
->>>>>>> 28acc8dc053779c905d60543243bc5fd7eda87a2
             
         
             
@@ -442,7 +438,6 @@ class Main_window(QMainWindow):
             label.show()
             label.setStyleSheet("background-color: "+color)
             
-<<<<<<< HEAD
     def genericframecleaner(self, referenceframe):
         tocleanlabels = referenceframe.findChildren(LabelFrames)
         for toclean in tocleanlabels:
@@ -750,19 +745,6 @@ class Main_window(QMainWindow):
                 
             
          
-=======
-    def visualactualizer(self):
-        self.handcleaner()
-        self.handassigner()
-        self.genericassigner(self.invaders_frame, self.invadersgrid, "invader", 80, "red")
-        self.genericassigner(self.defenders_frame, self.defendersgrid, "defending", 90, "green")
-        
-            
-        
-    
-            
-            
->>>>>>> 28acc8dc053779c905d60543243bc5fd7eda87a2
         
         
 def passer(imprimir = "eventopressed"):
