@@ -59,6 +59,51 @@ class Main_window(QMainWindow):
                              [94,10],[94,100],[94,190],[94,280],[94,370],[94,460],[94,550],[94,640],[94,730],[94,820]]
         
         self.defendersgrid = [[10,20],[10,120],[10,220],[10,320],[10,420],[10,520],[10,620],[10,720],[10,820],[10,920],[10,1020]]
+        
+        self.handgrid = [[6,6], [6,116], [116,6], [116,116], [226,6], [226,116], [336,6], [336,116], [446,6], [446,116]]
+        
+        self.buildgrid = [[2, 108, "Laser_Turret0"],
+                          [2, 214, "Laser_Turret1"],
+                          [2, 320, "Force_Dome0"],
+                          [2, 426, "Laser_Turret2"],
+                          [2, 532, "Force_Dome1"],
+                          [2, 638, "Laser_Turret3"],
+                          [108, 2, "Mine0"],
+                          [108, 108, "Solar_Array0"],
+                          [108, 214, "Solar_Array1"],
+                          [108, 320, "Solar_Array2"],
+                          [108, 426, "Solar_Array3"],
+                          [108, 532, "Solar_Array4"],
+                          [108, 638, "Solar_Array5"],
+                          [108, 744, "Solar_Array6"],
+                          [108, 850, "Mine1"],
+                          [214, 2, "Mine2"],
+                          [214, 108, "Agrodome0"],
+                          [214, 214, "Starport0"],
+                          [214, 320, "Stargate0"],
+                          [214, 426, "Research_Labs0"],
+                          [214, 532, "Research_Labs1"],
+                          [214, 638, "Refinery0"],
+                          [214, 744, "Agrodome1"],
+                          [214, 850, "Mine3"],
+                          [320, 2, "Mine4"],
+                          [320, 108, "Agrodome2"],
+                          [320, 214, "Colony0"],
+                          [320, 320, "Colony1"],
+                          [320, 426, "Command_Center0"],
+                          [320, 532, "Refinery1"],
+                          [320, 638, "Refinery2"],
+                          [320, 744, "Agrodome3"],
+                          [320, 850, "Mine5"],
+                          [426, 2, "Mine6"],
+                          [426, 108, "Agrodome4"],
+                          [426, 214, "Colony2"],
+                          [426, 320, "Colony3"],
+                          [426, 426, "Base0"],
+                          [426, 532, "Factory0"],
+                          [426, 638, "Refinery3"],
+                          [426, 744, "Agrodome5"],
+                          [426, 850, "Mine7"]]
 
         self.initUI()
         
@@ -104,7 +149,7 @@ class Main_window(QMainWindow):
         self.passturn_button.setGeometry(QtCore.QRect(800, 920, 100, 50))
         self.passturn_button.setStyleSheet("QWidget { background-color: white}")
         self.passturn_button.setText("New Game")
-        self.passturn_button.clicked.connect(lambda:self.gameplay())
+        self.passturn_button.clicked.connect(lambda:self.visualactualizer())
         self.passturn_button.setShortcut("Space")
         
         
@@ -306,9 +351,15 @@ class Main_window(QMainWindow):
         deck = identifierextractor(self.db.genericdatabasequery("SELECT id from deck"))
         print(deck)
         for ident in deck:
-            pict = self.db.genericdatabasequery("SELECT pict FROM images")
-            card =LabelFrames(self,0,0,str(ident),self.information_frame,"")
-            card.hide()
+            pict = self.db.genericdatabasequery("SELECT pict FROM images WHERE id="+str(ident))[0][0]
+            name = self.db.cardselector(ident)[0][1]
+            print(pict)
+            card = LabelFrames(self,0,0,name,self.infoframeshow,"images\\"+pict+".png")
+            #card.hide()
+            
+        
+            
+            
     
     
     
@@ -321,6 +372,84 @@ class Main_window(QMainWindow):
         self.information_frame.show()
     def infoframehide(self):
         self.information_frame.hide()
+        
+    def infoframeshow(self, identif, *args): # <--- Shows information of hoovered card
+        
+        if identif != "":
+            
+            self.information_frame.show()
+            number = identifierextractor(self.db.invertedcardselector("card",identif))[0]
+            pic = self.db.genericdatabasequery("SELECT pict FROM images WHERE id="+str(number))[0][0]
+            descript = self.db.genericdatabasequery("SELECT descript FROM images WHERE id="+str(number))[0][0]
+            self.info_pict.setPixmap(QtGui.QPixmap("images\\"+pic+".png"))
+            self.info_pict.setStyleSheet("background: white")
+            card = self.db.cardselector(number)[0]
+            
+            self.cardname_label.setText("Card: "+card[1])
+            self.cardtype_label.setText("Type: "+card[2])
+            self.cardforce_label.setText("Force: "+str(card[12]))
+            self.cardhits_label.setText("Hits: "+str(card[13]-card[16]))
+            self.cardattr_label.setText("Attr: "+descript)
+            
+        
+        else: 
+            
+            self.information_frame.show()
+            self.info_pict.setPixmap(QtGui.QPixmap(""))
+            self.info_pict.setStyleSheet("background-color: transparent")
+            self.cardname_label.setText("Card: "+"")
+            self.cardtype_label.setText("Type: "+"")
+            self.cardforce_label.setText("Force: "+"")
+            self.cardhits_label.setText("Hits: "+"")
+            self.cardattr_label.setText("Attr: "+"")
+            
+    def handassigner(self):
+        handcopy = self.handgrid.copy()
+        inhand = identifierextractor(self.db.invertedcardselector("placement", "hand"))
+        for pos in range(len(inhand)):
+            card = self.db.cardselector(str(inhand[pos]))[0][1]
+            position = handcopy[pos]
+            
+            label = self.findChildren(LabelFrames, card)[0]
+            
+            label.setParent(self.hand_frame)
+            label.ypos = position[0]
+            label.xpos = position[1]
+            label.setGeometry(QtCore.QRect(position[1], position[0], 106, 106))
+            label.show()
+            label.setStyleSheet("background-color: white")
+    
+    def handcleaner(self):
+        tocleanhand = self.hand_frame.findChildren(LabelFrames)
+        for toclean in  tocleanhand:
+            toclean.setParent(self)
+            toclean.hide()
+            
+    def genericassigner(self, referenceframe, referencegrid, placementcode, size, color):
+        gridcopy = referencegrid.copy()
+        inplace = identifierextractor(self.db.invertedcardselector("placement", placementcode))
+        for pos in range(len(inplace)):
+            card = self.db.cardselector(str(inplace[pos]))[0][1]   
+            position = gridcopy[pos]
+            
+            label = self.findChildren(LabelFrames, card)[0]
+            
+            label.setParent(referenceframe)
+            label.setGeometry(QtCore.QRect(position[1], position[0], size, size))
+            label.show()
+            label.setStyleSheet("background-color: "+color)
+            
+    def visualactualizer(self):
+        self.handcleaner()
+        self.handassigner()
+        self.genericassigner(self.invaders_frame, self.invadersgrid, "invader", 80, "red")
+        self.genericassigner(self.defenders_frame, self.defendersgrid, "defending", 90, "green")
+        
+            
+        
+    
+            
+            
         
         
 def passer(imprimir = "eventopressed"):
