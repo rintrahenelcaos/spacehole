@@ -12,6 +12,8 @@ except:
 
 
 class Phase():
+    """ Pahse blueprint
+    """
     
 
     def __init__(self, deck):
@@ -40,6 +42,11 @@ class DeckMixer(Phase):
 
 
 class DrawCardPhase(Phase):
+    """ Drawcard Phase
+
+    Args:
+        Phase (_type_): _description_
+    """
     
     def actionphase(self, *args):
         b = self.genericdatabasequery("SELECT id FROM deck WHERE deckpos = (SELECT min(deckpos) FROM deck)")
@@ -53,6 +60,10 @@ class DrawCardPhase(Phase):
         
    
 class SpaceKarmaPhase(Phase):
+    """ Space karma phase
+
+    
+    """
     
     def __init__(self, deck):
         super().__init__(deck)
@@ -63,10 +74,7 @@ class SpaceKarmaPhase(Phase):
         
     
     def actionphase(self, *args):
-        newinvader = 0
-        newevent = 0
         
-        #hand = self.cardselector(identif)
         for i in self.hand:
             card = self.cardselector(i)
             try:
@@ -80,9 +88,14 @@ class SpaceKarmaPhase(Phase):
         return self.communicator
 
 class EventPhase(Phase):
+    """Event phase
+
+    
+    """
+    
     def __init__(self, deck):
         super().__init__(deck)
-        #self.avalablecards = self.invertedcardselector()
+        
         self.deck = deck
         
     
@@ -108,157 +121,37 @@ class EventPhase(Phase):
         
             
     def eventlauncher(self, event):
+        """ Launches events
+
+        Args:
+            event (str): event effect definner in db
+
+        Returns:
+           int: megacredits modification
+        """
         ev = self.cardselector(event)[0][11]
         
         meg = Events(self.deck, ev).actionphase()
         return meg
         
-        
-
-
-    def battle(self):
-        invadermarching = identifierextractor(self.filteredaspectcardselector("placement","invader","force"))
-        print("invading",invadermarching)
-        invaderforce = 0
-        totalattack = 0
-        for i in invadermarching:
-            invaderforce += i
-        for h in range(invaderforce):
-            rand =random.randint(1,6)
-            if rand == 1:
-                totalattack += 1
-        
-        
-        defendersonline = identifierextractor(self.filteredaspectcardselector("placement","defending","force"))
-        lasersonline = identifierextractor(self.filteredaspectcardselector("placement","builded","force"))
-        print("defending",defendersonline)
-        print("laser ",lasersonline)
-        defenderforce = 0
-        laserforce = 0
-        self.totaldefense = 0
-        self.totallasser = 0
-        for d in defendersonline:
-            defenderforce += d
-        for l in lasersonline:
-            laserforce += l
-        for h in range(defenderforce):
-            rand = random.randint(1,6)
-            if rand == 1:
-                self.totaldefense += 1
-        for h2 in range(laserforce):
-            rand = random.randint(1,6)
-            if rand == 1:
-                self.totallasser += 1
-            
-                
-        invaderlist = identifierextractor(self.invertedcardselector("placement","invader")) 
-        defenderslist = identifierextractor(self.invertedcardselector("placement","defending")) 
-        self.lasserturrets = identifierextractor(self.invertedcardselector("placement", "builded"))
-        self.lasserturrets2 = self.lasserturrets.copy()
-        for lasser in self.lasserturrets2:
-            if int(self.cardselector(lasser)[0][12]) == 0:
-                self.lasserturrets.remove(lasser)
-        print(self.lasserturrets)
-        self.lasserturrets.remove(1)
-        print(self.lasserturrets)
-        self.forcedomes = identifierextractor(self.genericdatabasequery("SELECT id FROM deck WHERE card LIKE 'Force%'", ))
-        print(self.forcedomes)
-        self.forcedomes2 = self.forcedomes.copy()
-        for dome in self.forcedomes2:
-            
-            if self.cardselector(dome)[0][14] != "builded":
-                
-                self.forcedomes.remove(dome)
-        print("domes",self.forcedomes) 
-        
-        if totalattack > 0:
-            while totalattack > 0:
-                if len(defenderslist) > 0:
-                    targetdef = random.choice(defenderslist)
-                    hitted = int(self.cardselector(targetdef)[0][16])
-                    hitted += 1
-                    self.tablemodifier(targetdef, "hitted", hitted)
-                    if hitted == int(self.cardselector(targetdef)[0][13]):
-                        self.tablemodifier(targetdef,"placement", "discard")
-                        defenderslist.remove(targetdef)
-                    totalattack -= 1
-                else: break  
-            
-            while self.totaldefense > 0:  
-                if len(invaderlist) > 0:
-                    targetinvader = random.choice(invaderlist)
-                    hitted = int(self.cardselector(targetinvader)[0][16])
-                    hitted +=1
-                    self.tablemodifier(targetinvader, "hitted", hitted)
-                    if hitted == int(self.cardselector(targetinvader)[0][13]):
-                        self.tablemodifier(targetinvader,"placement", "discard")
-                        invaderlist.remove(targetinvader)
-                    self.totaldefense -= 1
-                else: totalattack = 0
-                    
-                
-            
-        if totalattack > 0:
-            while totalattack > 0:
-                if len(self.lasserturrets) > 0:
-                    targetlasser = random.choice(self.lasserturrets)
-                    hitted = int(self.cardselector(targetlasser)[0][16])
-                    hitted += 1
-                    self.tablemodifier(targetlasser, "hitted", hitted)
-                    if hitted == int(self.cardselector(targetlasser)[0][13]):
-                        self.tablemodifier(targetlasser,"placement", "discard")
-                        self.lasserturrets.remove(targetlasser)
-                    totalattack -= 1
-                else: break   
-            
-             
-                while self.totallasser > 0:
-                    if len(invaderlist)>0:
-                        targetinvader = random.choice(invaderlist)
-                        hitted = int(self.cardselector(targetinvader)[0][16])
-                        hitted +=1
-                        self.tablemodifier(targetinvader, "hitted", hitted)
-                        if hitted == int(self.cardselector(targetinvader)[0][13]):
-                            self.tablemodifier(targetinvader,"placement", "discard")
-                            invaderlist.remove(targetinvader)
-                        self.totaldefense -= 1
-                    else: totalattack = 0
-                
-        
-        if totalattack > 0:
-            while totalattack > 0:
-                if len(self.forcedomes) > 0:
-                    targetdome = random.choice(self.forcedomes)
-                    hitted = int(self.cardselector(targetdome)[0][16])
-                    hitted += 1
-                    self.tablemodifier(targetdome, "hitted", hitted)
-                    if hitted == int(self.cardselector(targetdome)[0][13]):
-                        self.tablemodifier(targetdome,"placement", "discard")
-                        self.forcedomes.remove(targetdome)
-                    totalattack -= 1
-                else: break
-        
-        if totalattack > 0:
-            while totalattack > 0:
-                if self.cardselector(1)[0][14] == "discard":
-                    
-                    hitted = int(self.cardselector(1)[0][16])
-                    hitted += 1
-                    self.tablemodifier(1, "hitted", hitted)
-                    if hitted == int(self.cardselector(1)[0][13]):
-                        self.tablemodifier(1,"placement", "discard")
-                        
-                    totalattack -= 1
-                else: break
 
 
 class BattlePhase(Phase):
+    """Battle phase. Includes all subphases of battle
+
+    
+    """
     def __init__(self, deck):
         super().__init__(deck)
         
         self.communicator =""
         
     def actionphase(self, *args):
+        """ Battle preparations subphase. Manages all data to subsequent methods
+
+        Returns:
+            str: description 
+        """
         
         
         invadermarching = identifierextractor(self.filteredaspectcardselector("placement","invader","force"))
@@ -304,32 +197,35 @@ class BattlePhase(Phase):
         for lasser in self.lasserturrets2:
             if int(self.cardselector(lasser)[0][12]) == 0:
                 self.lasserturrets.remove(lasser)
-        print(self.lasserturrets)
+        
         self.lasserturrets.remove(1)
-        print(self.lasserturrets)
+        
         self.forcedomes = identifierextractor(self.genericdatabasequery("SELECT id FROM deck WHERE card LIKE 'Force%'", ))
-        print(self.forcedomes)
+        
         self.forcedomes2 = self.forcedomes.copy()
         for dome in self.forcedomes2:
             
             if self.cardselector(dome)[0][14] != "builded":
                 
                 self.forcedomes.remove(dome)
-        print("domes",self.forcedomes) 
+        
         
         self.communicator = "Invaders: "
         for i in self.invaderlist:
             self.communicator += self.cardselector(i)[0][1]
         self.communicator += " are marching"
         
-        print("self.totalattack", self.totalattack)
-        print("self.totaldefense",self.totaldefense)
-        print("self.totallasser", self.totallasser)
+        
         
         return self.communicator
         
         
     def vsdefenders(self, *args):
+        """Subphase in charge of the defenders
+
+        Returns:
+            tuple: description(str), damage dealt to defenders (int), damage dealt to invaders (int)
+        """
         
         
         
@@ -361,13 +257,17 @@ class BattlePhase(Phase):
                     self.totaldefense -= 1
                 else: break
             self.communicator = "Damage dealt to defenders: "+str(originalinvaderattack-self.totalattack)+". Damage dealt to invaders by defenders: "+str(originaldefense - self.totaldefense)
-            print("self.totalattack", self.totalattack)
-            print("self.totaldefense",self.totaldefense)
+            
         else: self.communicator = "All invaders destroyed"
-        return self.communicator
+        return self.communicator, originalinvaderattack-self.totalattack, originaldefense - self.totaldefense
         
                 
     def vsturrets(self, *args):
+        """Subphase in charge of the lassers
+
+        Returns:
+            tuple: description(str), damage dealt to lassers (int), damage dealt to invaders (int)
+        """
         
         if len(self.invaderlist) > 0 :
             originalinvaderattack = self.totalattack
@@ -398,12 +298,16 @@ class BattlePhase(Phase):
                 else: break
             
             self.communicator = "Damage dealt to lassers: "+str(originalinvaderattack-self.totalattack)+". Damage dealt to invaders by lassers: "+str(originallasser - self.totallasser)
-            print("self.totalattack", self.totalattack)
-            print("self.totallasser", self.totallasser)
+            
         else: self.communicator = "All invaders destroyed"
-        return self.communicator
+        return self.communicator, originalinvaderattack-self.totalattack, originallasser - self.totallasser
     
     def vsdome(self, *args):
+        """Subphase in charge of the domes
+
+        Returns:
+            tuple: description(str), damage dealt to domes (int)
+        """
         
         if len(self.invaderlist) > 0:
             originalinvaderattack = self.totalattack
@@ -419,11 +323,16 @@ class BattlePhase(Phase):
                     self.totalattack -= 1
                 else: break
             self.communicator = "Damage dealt to domes: "+str(originalinvaderattack-self.totalattack)+"."
-            print("self.totalattack", self.totalattack)
+            
         else: self.communicator = "All invaders destroyed"
-        return self.communicator
+        return self.communicator, originalinvaderattack-self.totalattack
     
     def vsbase(self, *args):
+        """Subphase in charge of the base
+
+        Returns:
+            tuple: description(str), damage dealt to base (int)
+        """
         
         if len(self.invaderlist) > 0:
             originalinvaderattack = self.totalattack
@@ -431,9 +340,9 @@ class BattlePhase(Phase):
                 if self.cardselector(1)[0][14] != "discard":
                     
                     hitted = int(self.cardselector(1)[0][16])
-                    print(hitted)
+                    
                     hitted += 1
-                    print(hitted)
+                    
                     self.tablemodifier(1, "hitted", hitted)
                     if hitted == int(self.cardselector(1)[0][13]):
                         self.tablemodifier(1,"placement", "discard")
@@ -441,20 +350,22 @@ class BattlePhase(Phase):
                     self.totalattack -= 1
                 else: break
             self.communicator = "Damage dealt to base: "+str(originalinvaderattack-self.totalattack)+"."
-            print("self.totalattack", self.totalattack)
+            
         else: self.communicator = "All invaders destroyed"
-        return self.communicator
+        return self.communicator, originalinvaderattack-self.totalattack
         
 
 
 class Buildphase(Phase):
+    """ Build Phase
+
+    
+    """
     
     
     def __init__(self, deck):
         super().__init__(deck)
         
-        
-        #self.builded = identifierextractor(self.invertedcardselector("placement", "builded"))
         self.power = 0
         self.agrogen = 0
         self.defenders = 0
@@ -463,12 +374,14 @@ class Buildphase(Phase):
         self.colonies = 0
         self.labs = 0
         self.comunicator = ""
-        #print("self.builded",self.builded)
+        
         
         self.conditionalcalculators()
         
     
     def conditionalcalculators(self):
+        """Checks for the conditions to build
+        """
         self.builded = identifierextractor(self.invertedcardselector("placement", "builded"))  
         self.defending = identifierextractor(self.invertedcardselector("placement", "defending"))
         self.power = 0
@@ -480,7 +393,7 @@ class Buildphase(Phase):
         self.labs = 0
         for i in self.builded:
             building = self.cardselector(i)[0]
-            #print(building)
+            
             self.power += building[4]
             self.agrogen += building[5]
             self.defenders += building[6]
@@ -495,6 +408,8 @@ class Buildphase(Phase):
            
             
     def testeractionphase(self, *args):
+        """Unused/ Test function
+        """
         self.availablecards =  identifierextractor(self.invertedcardselector("placement", "hand"))
         #print(self.availablecards)
         for i in self.availablecards:
@@ -505,10 +420,18 @@ class Buildphase(Phase):
         #self.availabletubuild = identifierextractor(self.genericdatabasequery("SELECT id FROM deck WHERE placement=hand AND type=build;"))
         #print(self.availabletubuild)    
     def actionphase(self, selected, *args):
+        """ Action method of build phase
+
+        Args:
+            selected (str): card id
+
+        Returns:
+            str: description of the result of method
+        """
         
         
         tobuild = self.cardselector(selected)[0]
-        print(tobuild)
+        
         if tobuild[2] == "build":
             self.conditionbuildok(tobuild)
         elif tobuild[2] == "defender":
@@ -541,6 +464,10 @@ class Buildphase(Phase):
         else:self.comunicator = "Recruiting conditions not met"
             
 class PowerPhase(Phase):
+    """Unused
+
+    
+    """
     def __init__(self, deck):
         super().__init__(deck)
         
@@ -563,7 +490,9 @@ class PowerPhase(Phase):
         pass
         #print("poweralocation")
     
-class IncomePhase(Phase):    #ojo aca
+class IncomePhase(Phase):  
+    """ Income phase
+    """  
     def __init__(self, deck):
         super().__init__(deck)
         
@@ -574,17 +503,19 @@ class IncomePhase(Phase):    #ojo aca
             self.megacredits += building[3]
             
     def actionphase(self, megacredits):
+        """ MMegacredits calculation method
+
+        Args:
+            megacredits (str): variation at the end of turn
+
+        Returns:
+           int: new megacredits
+        """
         megacredits += self.megacredits
-        #print(megacredits)
+        
         return megacredits
     
-class DiscardPhase(Phase):
-    def __init__(self, deck):
-        super().__init__(deck)
-        self.handmax = 5
-        inhand = identifierextractor(self.invertedcardselector("placement", "hand"))
-        if len(inhand) > self.handmax:
-            pass
+
         
         
         

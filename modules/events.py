@@ -6,6 +6,11 @@ except:
 import random
 
 class Events(DBControl):
+    """ Class encapsulating all events effects
+
+    
+    """
+    
     def __init__(self, databse, order):
         super().__init__(databse)
         self.order=order

@@ -29,6 +29,10 @@ from modules.phases import DeckMixer, DrawCardPhase, SpaceKarmaPhase, EventPhase
 
 
 class Main_window(QMainWindow):
+    
+    """Game by itself
+    """
+    
     def __init__(self):
         super(Main_window, self).__init__()
         
@@ -39,11 +43,6 @@ class Main_window(QMainWindow):
         self.pointer = self.conector.cursor()
         cardpath = "modules\cards.csv"
         
-        
-        #tabledropper(self.conector)
-        #tableconstructor(self.conector)
-        #self.deck = cardextraction(cardpath)
-        #massiveloader(self.conector, self.deck)
         self.db = DBControl(self.conector)
         
         self.setObjectName("MainWindow")
@@ -58,7 +57,7 @@ class Main_window(QMainWindow):
         self.invadersgrid = [[4,10],[4,100],[4,190],[4,280],[4,370],[4,460],[4,550],[4,640],[4,730],[4,820],
                              [94,10],[94,100],[94,190],[94,280],[94,370],[94,460],[94,550],[94,640],[94,730],[94,820]]
         
-        self.defendersgrid = [[10,20],[10,120],[10,220],[10,320],[10,420],[10,520],[10,620],[10,720],[10,820],[10,920],[10,1020]]
+        self.defendersgrid = [[6,20],[6,120],[6,220],[6,320],[6,420],[6,520],[6,620],[6,720],[6,820],[6,920],[6,1020]]
         
         self.handgrid = [[6,6], [6,116], [116,6], [116,116], [226,6], [226,116], [336,6], [336,116], [446,6], [446,116]]
         
@@ -107,10 +106,7 @@ class Main_window(QMainWindow):
 
         self.initUI()
         
-    """def conection_sql(self):
-        global conector
-        conector = sqlite3.connect("currentgame.db")
-        return conector  """
+    
 
     def initUI(self):
 
@@ -124,27 +120,20 @@ class Main_window(QMainWindow):
         self.new_game.setText("New Game")
         self.new_game.triggered.connect(lambda: self.restart())
         
+        # Indicates Score
         self.megacredits_label = QLabel(self)
         self.megacredits_label.setGeometry(QtCore.QRect(940, 20 ,150, 15))
         self.megacredits_label.setText("Megacredits: $"+str(self.control.megacredits))
         self.megacredits_label.setStyleSheet("color: lightgreen")
         
-        
-        
-        """self.action_new_map = QtWidgets.QAction()
-        self.file_menu.addAction(self.action_new_map)
-        self.action_new_map.setText("New Map")
-      
-        self.action_clear_map = QtWidgets.QAction()
-        self.file_menu.addAction(self.action_clear_map)
-        self.action_clear_map.setText("Clear Map")"""
-
+        # Shows information on current game phase and what's happening
         self.info_phase_label = QtWidgets.QLabel(self)
         self.info_phase_label.setGeometry(QtCore.QRect(15, 45, 900, 15))
-        self.info_phase_label.setText("Press New Game button or select New Game in menu to start. Your objective is to earn as much megacredits as possible")
+        self.info_phase_label.setText("Press New Game button or select New Game in menu to start. Your objective is to earn as much megacredits as possible.")
         self.info_phase_label.setObjectName("info_phase_label")
         self.info_phase_label.setStyleSheet("color: white")
-
+        
+        # Phase Passer to allow gameplay
         self.passturn_button = QPushButton(self)
         self.passturn_button.setGeometry(QtCore.QRect(800, 920, 100, 50))
         self.passturn_button.setStyleSheet("QWidget { background-color: white}")
@@ -152,8 +141,7 @@ class Main_window(QMainWindow):
         self.passturn_button.clicked.connect(lambda:self.gameplay())
         self.passturn_button.setShortcut("Space")
         
-        
-
+        # Where the invaders go
         self.invaders_frame = QFrame(self)
         self.invaders_frame.setGeometry(QtCore.QRect(10, 80, 910, 178))
         self.invaders_frame.setStyleSheet("QWidget { background-color: #1E1E1E}")
@@ -166,14 +154,13 @@ class Main_window(QMainWindow):
         self.invaders_info.setText("Invaders")
         self.invaders_info.setStyleSheet("color: red")
         
-
+        # Shows information on hoovered card 
         self.information_frame = QFrame(self)
         self.information_frame.setGeometry(QtCore.QRect(930, 40, 310, 218))
         self.information_frame.setStyleSheet("color: white; background-color: #1E1E1E")
         self.information_frame.setFrameShape(QtWidgets.QFrame.Box)
         self.information_frame.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.information_frame.setLineWidth(2)
-        
         
         self.info_pict = QtWidgets.QLabel(self.information_frame)
         self.info_pict.setGeometry(QtCore.QRect(10, 10, 110, 110))
@@ -201,9 +188,8 @@ class Main_window(QMainWindow):
         self.cardattr_label.setText("Attr: "+"")
         self.cardattr_label.setAlignment(Qt.AlignTop)
         self.cardattr_label.setWordWrap(True)
-        #self.cardattr_label.setStyleSheet("color: white; background-color: blue")
         
-
+        # Where defenders go
         self.defenders_frame = QFrame(self)
         self.defenders_frame.setGeometry(QtCore.QRect(10, 280, 1230, 100))
         self.defenders_frame.setStyleSheet("QWidget { background-color: #1E1E1E}")
@@ -215,14 +201,16 @@ class Main_window(QMainWindow):
         self.defenders_info.setGeometry(QtCore.QRect(15, 265, 900, 10))
         self.defenders_info.setText("Defenders")
         self.defenders_info.setStyleSheet("color: green")
-
+        
+        # Where the base is displayed
         self.base_frame = QFrame(self)
         self.base_frame.setGeometry(QtCore.QRect(10, 390, 958, 534))
         self.base_frame.setStyleSheet("QWidget { background-color: #1E1E1E}")
         self.base_frame.setFrameShape(QtWidgets.QFrame.Box)
         self.base_frame.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.base_frame.setLineWidth(2)
-
+        
+        # Cards in hand to be played
         self.hand_frame = QFrame(self)
         self.hand_frame.setGeometry(QtCore.QRect(1000, 410, 228, 558))
         self.hand_frame.setStyleSheet("QWidget { background-color: #1E1E1E}")
@@ -230,14 +218,12 @@ class Main_window(QMainWindow):
         self.hand_frame.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.hand_frame.setLineWidth(2)
         
-        
-        
         self.hand_info = QLabel(self)
         self.hand_info.setGeometry(QtCore.QRect(1005, 395, 228, 10))
         self.hand_info.setText("Your Hand")
         self.hand_info.setStyleSheet("color: white")
         
-        
+        # Shows information on the current event
         self.events_frame = QFrame(self)
         self.events_frame.setGeometry(QtCore.QRect(425, 250, 300, 350))
         self.events_frame.setStyleSheet("QWidget { background-color: gray}") 
@@ -249,15 +235,12 @@ class Main_window(QMainWindow):
         self.events_announce.setStyleSheet("color: red")
         self.events_announce.setAlignment(Qt.AlignCenter)
         
-        
-        
         self.event_pict = QtWidgets.QLabel(self.events_frame)
         self.event_pict.setGeometry(QtCore.QRect(90, 10, 120, 120))
         self.event_pict.setStyleSheet("color: white; background-color: yellow")
         self.event_pict.setPixmap(QtGui.QPixmap(""))
         self.event_pict.setScaledContents(True)
-        
-        
+         
         self.eventcard_label = QLabel(self.events_frame)
         self.eventcard_label.setGeometry(QtCore.QRect(0, 170, 300, 15))
         self.eventcard_label.setText("Card: "+"")
@@ -267,9 +250,7 @@ class Main_window(QMainWindow):
         self.eventtype_label.setGeometry(QtCore.QRect(0, 190, 300, 15))
         self.eventtype_label.setText("Type: "+"")
         self.eventtype_label.setAlignment(Qt.AlignCenter)
-        
-        
-        
+         
         self.eventattr_label = QLabel(self.events_frame)
         self.eventattr_label.setGeometry(QtCore.QRect(20, 220, 260, 80))
         self.eventattr_label.setText("Attr: "+"")
@@ -281,6 +262,7 @@ class Main_window(QMainWindow):
         self.event_button.setText("OK")
         self.event_button.clicked.connect(lambda: self.eventok())
         
+        # End gamne communication
         self.communication_frame = QFrame(self)
         self.communication_frame.setGeometry(QtCore.QRect(425, 250, 400, 400))
         self.communication_frame.setStyleSheet("QWidget { background-color: gray}")
@@ -302,7 +284,7 @@ class Main_window(QMainWindow):
         self.communication_frame_button.setGeometry(QtCore.QRect(100,280,200,50))
         self.communication_frame_button.clicked.connect(lambda: self.restart())
         
-        
+        # Building Phase options
         self.building_choose_frame = QFrame(self)
         self.building_choose_frame.setGeometry(QtCore.QRect(425, 250, 400, 200))
         self.building_choose_frame.setStyleSheet("QWidget { background-color: gray}")
@@ -322,13 +304,11 @@ class Main_window(QMainWindow):
         self.choosing_button_2.setStyleSheet("QWidget { background-color: blue}")
         self.choosing_button_2.show()
         
-        
+        # Shows what had happenned
         self.happening_label = QLabel(self)
         self.happening_label.setGeometry(QtCore.QRect(10, 930, 790, 20))
         self.happening_label.setText("")
         self.happening_label.setStyleSheet("color: white")
-        
-        self.timer = QtCore.QTimer(self)
         
         
         
@@ -336,43 +316,28 @@ class Main_window(QMainWindow):
         
         self.cardcreator()
        
-        #handgrido(self.hand_frame, self.information_frame)
-        #self.genericlabelassigner()
-        #
-        #buildgrid(self.base_frame, self.information_frame)
-        #self.buildingslabelassigner()
-        #
-        #invadergrid(self.invaders_frame, self.information_frame)
-        #self.genericspecificlabelassigner("invader", self.invaders_frame, "red")
-        #defendersgrid(self.defenders_frame, self.information_frame)
-        #self.genericspecificlabelassigner("defender", self.defenders_frame, "green")
+        
     
     def cardcreator(self):
+        """Creates the cards as labels
+        """
+        
         deck = identifierextractor(self.db.genericdatabasequery("SELECT id from deck"))
-        print(deck)
+        
         for ident in deck:
             pict = self.db.genericdatabasequery("SELECT pict FROM images WHERE id="+str(ident))[0][0]
             name = self.db.cardselector(ident)[0][1]
-            print(pict)
+            
             card = LabelFrames(self,0,0,name,self.infoframeshow,"images\\"+pict+".png")
             card.hide()
             
-        
             
-            
-    
-    
-    
-    
-     
-        
-    
-    def infoframeshow(self):
-        self.information_frame.show()
-    def infoframehide(self):
-        self.information_frame.hide()
-        
     def infoframeshow(self, identif, *args): # <--- Shows information of hoovered card
+        """_summary_
+
+        Args:
+            identif (str): card name
+        """
         
         if identif != "":
             
@@ -403,6 +368,9 @@ class Main_window(QMainWindow):
             self.cardattr_label.setText("Attr: "+"")
             
     def handassigner(self):
+        """Assigns cards to hand from db
+        """
+        
         handcopy = self.handgrid.copy()
         inhand = identifierextractor(self.db.invertedcardselector("placement", "hand"))
         for pos in range(len(inhand)):
@@ -419,12 +387,25 @@ class Main_window(QMainWindow):
             label.setStyleSheet("background-color: white")
     
     def handcleaner(self):
+        """Clears the hand to keep it actualized
+        """
+        
         tocleanhand = self.hand_frame.findChildren(LabelFrames)
         for toclean in  tocleanhand:
             toclean.setParent(self)
             toclean.hide()
             
     def genericassigner(self, referenceframe, referencegrid, placementcode, size, color):
+        """generic function to assign cards to frames
+
+        Args:
+            referenceframe (QFrame): Frame to assign
+            referencegrid (list): grid of positions to place cards
+            placementcode (str): value in db "placement"
+            size (int): size of card in frame
+            color (str): rgb or color
+        """
+        
         gridcopy = referencegrid.copy()
         inplace = identifierextractor(self.db.invertedcardselector("placement", placementcode))
         for pos in range(len(inplace)):
@@ -439,12 +420,20 @@ class Main_window(QMainWindow):
             label.setStyleSheet("background-color: "+color)
             
     def genericframecleaner(self, referenceframe):
+        """Clears the frame to keep it actualized
+
+        Args:
+            referenceframe (QFrame): target frame
+        """
+        
         tocleanlabels = referenceframe.findChildren(LabelFrames)
         for toclean in tocleanlabels:
             toclean.setParent(self)
             toclean.hide()
             
     def buildassigner(self):
+        """Assigns cards to the base frame
+        """
         
         builded = identifierextractor(self.db.invertedcardselector("placement", "builded"))
         
@@ -457,10 +446,12 @@ class Main_window(QMainWindow):
                     label.setGeometry(QtCore.QRect(pos[1], pos[0], 106, 106))
                     label.show()
                     label.setStyleSheet("background-color: grey")
-                    #label.asociatedfunc = self.deletedamage
-                    #label.button.setEnabled(False)
+                    
     
     def buildcleaner(self):
+        """Clears the base to keep it actualized
+        """
+        
         toclean = self.base_frame.findChildren(LabelFrames)
         
         for cleanbuild in toclean:
@@ -470,6 +461,9 @@ class Main_window(QMainWindow):
                     
             
     def viewactualizer(self):
+        """Actualizes the ui
+        """
+        
         self.handcleaner()
         self.handassigner()
         self.genericframecleaner(self.invaders_frame)
@@ -499,6 +493,9 @@ class Main_window(QMainWindow):
     
     
     def gameplay(self): 
+        """Sequential function for game phases
+        """
+        
         if self.counterturn == 11: self.counterturn = 1 
         
         if   self.counterturn == 0:  self.startgame()
@@ -517,6 +514,8 @@ class Main_window(QMainWindow):
         self.counterturn += 1
     
     def startgame(self):
+        """Game starting function
+        """
         
         self.passturn_button.setText("Next Phase")
         self.passturn_button.setEnabled(True)
@@ -527,6 +526,8 @@ class Main_window(QMainWindow):
         self.control.startgame()        
     
     def restart(self):
+        """Game restarting function
+        """
         self.passturn_button.setText("Start Game")
         self.passturn_button.setEnabled(True)
         self.control.restarter()
@@ -536,23 +537,21 @@ class Main_window(QMainWindow):
         self.counterturn = 0   
     
     def drawphasefunction(self):
+        """Draw cards
+        """
+        
         self.info_phase_label.setText("Drawing Card - Event and Invaders will automatically be played in the next phase")
         self.control.drawphasefunction()
-        """
-        timer = QtCore.QTimer(self, interval=5 * 1000)
-        timer.timeout.connect(self.handle_timeout)
-        timer.start()
         
-        self.handle_timeout(self.hand_frame)"""
-        apply_color_animation(self.hand_frame, QtGui.QColor("white"), QtGui.QColor("#1E1E1E"), duration=2500)
+        apply_color_animation(self.hand_frame, QtGui.QColor("dimgray"), QtGui.QColor("#1E1E1E"), duration=2500)
         
-        self.timer.setInterval(2500)
-        self.timer.start()
-        self.timer.timeout.connect(lambda: apply_color_animation(self.hand_frame, QtGui.QColor("white"), QtGui.QColor("#1E1E1E"), duration=2500))
-        #timer = QtCore.QTimer(self)
+        
+        
         
     def spacekarmaeventsphasefunction(self):
-        self.timer.stop()
+        """Compose function to autoplay events and invaders. Jumps to build phase if further actions are not needed
+        """
+        
         self.info_phase_label.setText("Space Karma Phase - Invaders are played and Events are triggered at this moment")
         
         
@@ -565,11 +564,11 @@ class Main_window(QMainWindow):
             self.counterturn = 7 
             
     def eventphasefunction(self):
-        #self.info_phase_label.setText("Events Phase")
+        """Previously used as phase in itself, calls the event window and launches the events
+        """
+        
         eventsonwait = identifierextractor(self.db.invertedcardselector("placement", "event"))
-        """if len(self.db.invertedcardselector("placement","invader")) == 0:
-            self.counterturn += 5"""
-        #else:pass
+        
         if len(eventsonwait) > 0:
             number = eventsonwait[0]
             self.passturn_button.setEnabled(False)
@@ -583,48 +582,139 @@ class Main_window(QMainWindow):
         else: self.happening_label.setText("No events happening now") 
         
     def eventok(self):
+        """ Events launcher 
+        """
+        
         self.control.eventphasefunction()
         self.events_frame.hide()
         
         self.passturn_button.setEnabled(True)
         self.passturn_button.setShortcut("Space")
-        #self.counterturn -= 2
+        
         self.gameplay()
         
     def battlepreparationfunction(self):
+        """ If invaders are in game this is called. 
+        """
         
-        #self.passturn_button.setEnabled(False)
+        self.passturn_button.setEnabled(False)
+        
         self.info_phase_label.setText("Battle Preparations Phase")
         happen = self.control.battlepreparationfunction()
         self.happening_label.setText(happen)
         
-        """if len(self.db.invertedcardselector("placement","invader")) == 0:
-            self.counterturn += 4"""
+        apply_color_animation(self.invaders_frame, QtGui.QColor("darkred"), QtGui.QColor("#1E1E1E"), duration=1000, loops=2)
+        waiter = QtCore.QTimer()
+        waiter.singleShot(1000, self.passturn_button_unblocker)
+        
+        
     
     def battledefendersfunction(self):
+        
+        """ Invaders attack defenders
+        """
+        
+        
+        self.passturn_button.setEnabled(False)
         self.info_phase_label.setText("Battle vs Defenders Phase")
-        happen = self.control.battledefendersfunction()
-        self.happening_label.setText(happen) 
-       
+        apply_color_animation(self.defenders_frame, QtGui.QColor("darkgreen"), QtGui.QColor("#1E1E1E"), duration=1000)
+        apply_color_animation(self.invaders_frame, QtGui.QColor("darkred"), QtGui.QColor("#1E1E1E"), duration=1000)
+        happen, damagetodefenders, damagetoinvaders = self.control.battledefendersfunction()
+        waiter = QtCore.QTimer()
+        waiter.singleShot(1000,lambda: self.battleressulttwosides(happen, damagetodefenders, damagetoinvaders, self.defenders_frame))
+        
+        
     def battlelassersfunction(self):
+        """ Invaders fight lasser turrets
+        """
+        
+        
+        self.passturn_button.setEnabled(False)
         self.info_phase_label.setText("Battle vs Lassers Phase")
-        happen = self.control.battlelassersfunction()
-        self.happening_label.setText(happen) 
+        apply_color_animation(self.base_frame, QtGui.QColor("darkgreen"), QtGui.QColor("#1E1E1E"), duration=1000)
+        apply_color_animation(self.invaders_frame, QtGui.QColor("darkred"), QtGui.QColor("#1E1E1E"), duration=1000)
+        happen, damagetolassers, damagetoinvaders= self.control.battlelassersfunction()
+        
+        waiter = QtCore.QTimer()
+        waiter.singleShot(1000,lambda: self.battleressulttwosides(happen, damagetolassers, damagetoinvaders, self.base_frame)) 
     
     def battledomesfunction(self):
+        """Invaders hit domes
+        """
+        
+        self.passturn_button.setEnabled(False)
         self.info_phase_label.setText("Battle vs Domes Phase")
-        happen = self.control.battledomesfunction()
-        self.happening_label.setText(happen) 
+        apply_color_animation(self.base_frame, QtGui.QColor("darkgreen"), QtGui.QColor("#1E1E1E"), duration=1000)
+        apply_color_animation(self.invaders_frame, QtGui.QColor("darkred"), QtGui.QColor("#1E1E1E"), duration=1000)
+        happen, damagetodomes = self.control.battledomesfunction()
+        
+        waiter = QtCore.QTimer()
+        waiter.singleShot(1000,lambda: self.battleressultonesided(happen, damagetodomes, self.base_frame))
         
         
     def battlebasefunction(self):
+        """Invaders hit base
+        """
+        
+        self.passturn_button.setEnabled(False)
         self.info_phase_label.setText("Battle vs Base Phase")
-        happen = self.control.battlebasefunction()
-        self.happening_label.setText(happen) 
-        #self.viewactualizer()
-        #self.passturn_button.setEnabled(True)
+        apply_color_animation(self.base_frame, QtGui.QColor("darkgreen"), QtGui.QColor("#1E1E1E"), duration=1000)
+        apply_color_animation(self.invaders_frame, QtGui.QColor("darkred"), QtGui.QColor("#1E1E1E"), duration=1000)
+        happen, damagetobase = self.control.battlebasefunction()
+        
+        waiter = QtCore.QTimer()
+        waiter.singleShot(1000,lambda: self.battleressultonesided(happen, damagetobase, self.base_frame))
+        
+        
+    
+    def passturn_button_unblocker(self):
+        """ Enables passturn_button after battle animations
+        """
+        self.passturn_button.setEnabled(True)
+        
+    def battleressulttwosides(self, happen, damagetodefenders, damagetoinvaders, defendersframe):
+        """ Shows battle results if there are two sides dealing damage
+
+        Args:
+            happen (str): description of battle results
+            damagetodefenders (int): amount of hits dealt to the defending side
+            damagetoinvaders (int): amount of hits dealt to the atacking side
+            defendersframe (QFrame): frame indicating who are defending
+        """
+
+
+        self.happening_label.setText(happen)
+    
+        for d in range(damagetodefenders):
+            apply_color_animation(defendersframe, QtGui.QColor("white"), QtGui.QColor("#1E1E1E"), duration=800, loops=1)
+            
+        for d in range(damagetoinvaders):
+            apply_color_animation(self.invaders_frame, QtGui.QColor("white"), QtGui.QColor("#1E1E1E"), duration=800, loops=1)
+            
+        self.passturn_button_unblocker()
+    
+    def battleressultonesided(self,happen,damagetodefenders, defendersframe):
+        """Shows battle results if there is only one side dealing damage
+
+        Args:
+            happen (str): description of battle results
+            damagetodefenders (int): amount of hits dealt to the defending side
+            defendersframe (QFrame): frame indicating who are defending
+        """
+        
+        
+        self.happening_label.setText(happen)
+    
+        for d in range(damagetodefenders):
+            apply_color_animation(defendersframe, QtGui.QColor("white"), QtGui.QColor("#1E1E1E"), duration=800, loops=1)
+        
+        self.passturn_button_unblocker()
+        
         
     def buildphasefunction(self):
+        """Function to decide what to do in build phase
+        """
+        
         self.info_phase_label.setText("Build Phase - choose either to build or repair. Phase can be pass after choosing")
         
         self.passturn_button.setEnabled(False)
@@ -635,13 +725,13 @@ class Main_window(QMainWindow):
         self.choosing_button.clicked.connect(lambda: self.repairinbuilphase())
     
     def buildingbuildphase(self):
+        """If build is chosed, this is called in order to play cards in hand
+        """
+        
         self.info_phase_label.setText("Building: Choose cards in hand to play")
-        apply_color_animation(self.hand_frame, QtGui.QColor("white"), QtGui.QColor("#1E1E1E"), duration=2500)
-        apply_color_animation(self.base_frame, QtGui.QColor("white"), QtGui.QColor("#1E1E1E"), duration=2500)
-        #timer.singleShot(5000)
-        self.timer.setInterval(2500)
-        self.timer.start()
-        self.timer.timeout.connect(lambda: apply_color_animation(self.base_frame, QtGui.QColor("white"), QtGui.QColor("#1E1E1E"), duration=2500))
+        apply_color_animation(self.hand_frame, QtGui.QColor("dimgray"), QtGui.QColor("#1E1E1E"), duration=2000)
+        waiter = QtCore.QTimer()
+        waiter.singleShot(1500, self.doublecoloranimation)
         
         self.building_choose_frame.hide()
         self.passturn_button.setEnabled(True)
@@ -650,8 +740,21 @@ class Main_window(QMainWindow):
         for label in self.hand_frame.findChildren(LabelFrames):
             label.asociatedfunc = self.building
             self.viewactualizer()
+    
+    def doublecoloranimation(self):
+        """Function necessary to highlight two frames at the same time
+        """
+        
+        apply_color_animation(self.base_frame, QtGui.QColor("darkgreen"), QtGui.QColor("#1E1E1E"), duration=2000)
+        apply_color_animation(self.defenders_frame, QtGui.QColor("darkgreen"), QtGui.QColor("#1E1E1E"), duration=2000)
+        
             
     def building(self, ident):
+        """ Play cards function
+
+        Args:
+            ident (str): card name to be played
+        """
     
         identificator = identifierextractor(self.db.invertedcardselector("card", ident))[0]
         happen = self.control.building(identificator)
@@ -660,18 +763,24 @@ class Main_window(QMainWindow):
         self.buildingbuildphase()
         
     def repairinbuilphase(self):
+        """ If repair is chosed, this is called in order to repair cards in play
+        """
+        
         self.info_phase_label.setText("Repairing: Choose building or Defender to eliminate damge from")
         self.passturn_button.setEnabled(True)
         self.passturn_button.setShortcut("Space")
         self.building_choose_frame.hide()
         
+        apply_color_animation(self.base_frame, QtGui.QColor("dimgray"), QtGui.QColor("#1E1E1E"), duration=2000)
+        
+        
         for label in self.hand_frame.findChildren(LabelFrames):
             label.asociatedfunc = passer
-        print(self.base_frame.findChildren(LabelFrames))
+        
         for built in self.base_frame.findChildren(LabelFrames):
-            print(built)
+            
             built.asociatedfunc = self.deletedamage
-            print(built.asociatedfunc)
+            
             
         for defender in self.defenders_frame.findChildren(LabelFrames):
             defender.asociatedfunc = self.deletedamage
@@ -679,8 +788,13 @@ class Main_window(QMainWindow):
         self.viewactualizer()
     
     def deletedamage(self, ident):
+        """ Function to eliminate damage from selected card
+
+        Args:
+            ident (str): card name to be repaired
+        """
         
-        print("deletadamage")
+        
         identificator = identifierextractor(self.db.invertedcardselector("card", ident))[0]
         self.db.tablemodifier(identificator, "hitted", "0")
         self.viewactualizer()
@@ -693,12 +807,14 @@ class Main_window(QMainWindow):
         
         self.happening_label.setText("All damage dealt to "+ident+" repaired")
         self.gameplay()
-        #self.viewactualizer()
+        
         
     def incomephasefunction(self):
-        self.timer.stop()
+        """Function to calculate megacredits(score)
+        """
+        
         self.info_phase_label.setText("Income Phase - Megacredits from buildings in play are added")
-        #self.pass_build.setEnabled(False)
+        
         
         for built in self.base_frame.findChildren(LabelFrames):
             built.asociatedfunc = passer
@@ -712,6 +828,9 @@ class Main_window(QMainWindow):
         self.control.incomephasefunction()
     
     def handmaxcleaner(self):
+        """Function to decide if discard is necesary
+        """
+        
         self.info_phase_label.setText("Handclean Phase - excess of cards over the maximun allowed must be discarded")
         
         
@@ -736,6 +855,12 @@ class Main_window(QMainWindow):
             self.passturn_button.setEnabled(True)
     
     def discardextra(self, ident):
+        """ Chosen card is discarded
+
+        Args:
+            ident (str): card name
+        """
+        
         identificator = identifierextractor(self.db.invertedcardselector("card", ident))[0]
         self.db.tablemodifier(identificator, "placement", "discard")
         self.viewactualizer()
@@ -748,9 +873,20 @@ class Main_window(QMainWindow):
         
         
 def passer(imprimir = "eventopressed"):
-    print(imprimir)
+    """Dummy function
+
+    Args:
+        imprimir (str, optional): card name. Defaults to "eventopressed".
+    """
+    #print(imprimir)
+    pass
         
 class LabelFrames(QLabel):
+    """Base class to create each card
+
+    
+    """
+    
     def __init__(
         self,
         reference_frame,
@@ -789,12 +925,11 @@ class LabelFrames(QLabel):
         self.raise_()
 
         self.setMouseTracking(True)
-        # self.mouseMoveEvent()
-        #self.iconp = QtGui.QIcon(icon)
+        
         self.setPixmap(QtGui.QPixmap(icon))
         self.setScaledContents(True)
 
-        # self.windowTitle.setStyleSheet("color: white")
+        
         self.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         
                 
@@ -813,36 +948,22 @@ class LabelFrames(QLabel):
         self.labelforce.setGeometry(QtCore.QRect(10,20, width, 20))
         self.labelforce.setStyleSheet("background-color: transparent; color:red ")
         self.labelforce.hide()
-        
-        
-        #self.button.hide()
-
-        # LabelMiniFrames(self)
-
-        # self.infowindow = Infoshower(self.reference_frame, self.xpos, self.ypos, self.identif, 100, 100, "yellow" )
-        
-        
-        
-    """def mouseMoveEvent(self, event):
-        print ("'Mouse moved!'")"""
-        
     
 
     def enterEvent(self, event):
-        #self.infoframe.show()
+        
         self.infoframe(self.identif)
 
     def leaveEvent(self, event):
         self.infoframe("")
-        #self.infoframe(self.identif)
+       
 
-    """def mousePress(self, event):
-        super().mousePressEvent(event)
-        self.asociatedfunc()"""
+    
 
 
      
 def returner(asociated):
+    """Dummy function"""
     return asociated
 
     
@@ -850,9 +971,24 @@ def passer2(*args):
     print("2nd func")
     
 def helper_function(widget, color):
+    """ Allows color change
+
+    Args:
+        widget (Qwidget): Target widget
+        color (str): colour code
+    """
     widget.setStyleSheet("background-color: {}".format(color.name()))
     
 def apply_color_animation(widget, start_color, end_color, duration=1000, loops=1):
+    """ Function to indicate what to do via colors
+
+    Args:
+        widget (QWidget): target widget
+        start_color (str): initial color
+        end_color (str): end color, usually original one
+        duration (int, optional): transition duration. Defaults to 1000.
+        loops (int, optional): number of transitions. Defaults to 1.
+    """
     anim = QtCore.QVariantAnimation(
         widget,
         duration=duration,
@@ -871,18 +1007,10 @@ def apply_color_animation(widget, start_color, end_color, duration=1000, loops=1
 if __name__ == "__main__":
 
     app = QtWidgets.QApplication(sys.argv)
-    #ui = Main_window("modules\cards.csv")
+    
     ui = Main_window()
     ui.control.startgame()
-    #ui.buildactualizer()
-    #ui.buildingslabelassigner()
-    #ui.tester()
-    #uibutton = BuildedFrames(ui.base_frame, 2, 2, "button", ui.information_frame, color="white", icon="..\\images\\agrodome.png")
-    #uilabel = LabelFrames(uibutton,0,0,"buttonlabel", ui.information_frame, icon="..\\images\\agrodome.png", color="blue")
-    #handgrido(self.hand_frame, self.information_frame)
-    #hand_grid(ui.handlayout, ui.hand_frame)
-    #add_label(ui.handlayout, hand_grid_positions(),0, "label1", ui.information_frame,color="pink")
-    #add_label(ui.handlayout, hand_grid_positions(),1, "label2", ui.information_frame,color="pink")
+    
     
     
 
