@@ -1,33 +1,33 @@
-# importing csv module
+
 import csv
 import sqlite3
 
-# csv file name
+
 filename = "modules\\cards.csv"
 
-# initializing the titles and rows list
+
 fields = []
 rows = []
 
 
 
 def csvlistconverter(filename):
-# csv file name
+
     
 
-# initializing the titles and rows list
+
     fields = []
     rows = []
 
-    # reading csv file
+    
     with open(filename, "r") as csvfile:
-        # creating a csv reader object
+        
         csvreader = csv.reader(csvfile)
 
-        # extracting field names through first row
+        
         fields = next(csvreader)
 
-        # extracting each data row one by one
+        
         for row in csvreader:
             rows.append(row)
 
@@ -86,21 +86,14 @@ def tableconstructor(conection):
     
 
 
-def carga_sistema(apellidoc, nombrec, cursoc, tp1c=0, tp2c=0, tp3c=0, examenc=0):
-    
-    notac = round((tp1c + tp2c + tp3c) / 6 + examenc / 2, 0)
-    tupla_carga_sist = (apellidoc, nombrec, cursoc, tp1c, tp2c, tp3c, examenc, notac)
-    
-    return tupla_carga_sist
 
-
-def loaddb(coneccion, tuplacarga):
+def loaddb(conection, tupleload):
 
     
 
-    apuntador = coneccion.cursor()
-    carga = "INSERT INTO deck(card, type, income, power, agrogen, defenders, mining, refinerie, colonies, labs, notes, force, hits, placement, deckpos, hitted) VALUES (?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?)"
-    apuntador.execute(carga, tuplacarga)
+    pointer = conection.cursor()
+    load = "INSERT INTO deck(card, type, income, power, agrogen, defenders, mining, refinerie, colonies, labs, notes, force, hits, placement, deckpos, hitted) VALUES (?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?)"
+    pointer.execute(load, tupleload)
     coneccion.commit()
     
     
