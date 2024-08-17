@@ -1,4 +1,4 @@
-# importing csv module
+
 import csv
 import sqlite3
 
@@ -19,6 +19,10 @@ def csvlistconverter(filename):
     fields = []
     rows = []
 
+<<<<<<< HEAD
+=======
+    
+>>>>>>> 4ee3f75e3d4a981205cf86f6585f6f7c35a2fe8a
     with open(filename, "r") as csvfile:
         
         csvreader = csv.reader(csvfile)
@@ -85,11 +89,20 @@ def tableconstructor(conection):
     
 
 
+<<<<<<< HEAD
 def loaddb(coneccion, tupleload):
 
     
 
     pointer = coneccion.cursor()
+=======
+
+def loaddb(conection, tupleload):
+
+    
+
+    pointer = conection.cursor()
+>>>>>>> 4ee3f75e3d4a981205cf86f6585f6f7c35a2fe8a
     load = "INSERT INTO deck(card, type, income, power, agrogen, defenders, mining, refinerie, colonies, labs, notes, force, hits, placement, deckpos, hitted) VALUES (?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?)"
     pointer.execute(load, tupleload)
     coneccion.commit()
