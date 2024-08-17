@@ -1,7 +1,7 @@
-from PyQt5 import QtWidgets, QtCore,QtGui
-import sys
+# module linking db to UI. Contains most game functions appart from a couple which are contained in gui.py
+
 import sqlite3
-import random
+
 
 from modules.cards import cardextraction, massiveloader, tableconstructor, tabledropper
 from modules.dbcontrol import DBControl, identifierextractor
@@ -10,17 +10,17 @@ from modules.dbcontrol import DBControl, identifierextractor
 from modules.phases import DeckMixer, DrawCardPhase, SpaceKarmaPhase, EventPhase, BattlePhase,Buildphase, PowerPhase, IncomePhase
 
 
-class Control(DBControl):
+class Control(DBControl): # instantiate the db control object inside the class
     def __init__(self, cardpath):
         
-        self.cardpath = cardpath
+        self.cardpath = cardpath # get the database
         self.conector = self.conection_sql()
         self.pointer = self.conector.cursor()
-        tabledropper(self.conector)
-        tableconstructor(self.conector)
-        self.deck = cardextraction(cardpath)
-        massiveloader(self.conector, self.deck)
-        self.turnlist = [DrawCardPhase, SpaceKarmaPhase, EventPhase, Buildphase, PowerPhase, IncomePhase]
+        tabledropper(self.conector) # restart game db
+        tableconstructor(self.conector) # rebuilt it
+        self.deck = cardextraction(cardpath) # extract data from csv
+        massiveloader(self.conector, self.deck) # load data
+        #self.turnlist = [DrawCardPhase, SpaceKarmaPhase, EventPhase, Buildphase, PowerPhase, IncomePhase] # list of classes
         self.megacredits = 0
         self.phasecounter = 0
         
@@ -35,33 +35,13 @@ class Control(DBControl):
         
         
        
-    def conection_sql(self):
+    def conection_sql(self): # method to conect to the db
         global conector
         conector = sqlite3.connect("currentgame.db")
         return conector  
     
-    def tester(self):
-        """ Test method
-        """
-        
-        
-        
-        
-        DrawCardPhase(self.conector).actionphase()
-        SpaceKarmaPhase(self.conector).actionphase()
-        EventPhase(self.conector).actionphase()
-        Buildphase(self.conector).testeractionphase()
-        #self.handassigner()
-        #self.buildingsactualizer()
-        #self.randomframeactualizer(self.ui.invaders_frame, "invader")
-        #self.randomframeactualizer(self.ui.defenders_frame, "defending")
-        #self.viewactualizer()
-        PowerPhase(self.conector).actionphase()
-        IncomePhase(self.conector).actionphase(self.megacredits)
-        
-    
-        
-    def restarter(self):
+       
+    def restarter(self): # method to restar the game. Different form the startgame function. Bassically cleans the db and reloads it
         """ Clears and reloads db from csv file
         """
         tabledropper(self.conector)
@@ -90,7 +70,7 @@ class Control(DBControl):
         """ Calls EventPhase object and method
         """
         
-        self.megacredits += EventPhase(self.conector).actionphase()
+        self.megacredits += EventPhase(self.conector).actionphase() # gets megacredits change in case its needed
         
     def battlepreparationfunction(self):
         """ Instantiates BattlePhase. Must be called before all other battlephases
@@ -138,13 +118,7 @@ class Control(DBControl):
         communicator, damagetobase = self.battle.vsbase()
         return communicator, damagetobase
     
-    def buildphasefunctiontester(self):
-        """Test method
-        """
-        #self.ui.info_phase_label.setText("Build Phase")
-        Buildphase(self.conector).testeractionphase()
-      
-        
+       
     def building(self, ident):
         """ Instantiates Buildphase and methods
 

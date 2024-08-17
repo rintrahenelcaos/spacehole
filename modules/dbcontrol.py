@@ -1,4 +1,8 @@
+# Module of db functions
+
 import sqlite3
+
+
 
 class DBControl():
     
@@ -9,8 +13,8 @@ class DBControl():
         Args:
             databse (db): Deck database 
         """
-        
-        self.conector = databse
+        # initialize the database link
+        self.conector = databse 
         self.pointer = self.conector.cursor()
         self.tuplavista = ()
         self.lista_enganche = []

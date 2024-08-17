@@ -1,3 +1,6 @@
+# Event Cards handling module. Works by reading event codes from db and linking to each method. creating a class prevents the creation of individual functions
+
+# prevent crash 
 try:
     from dbcontrol import DBControl
 except:
@@ -12,10 +15,21 @@ class Events(DBControl):
     """
     
     def __init__(self, databse, order):
+        """ Class encapsulating all events effects
+
+        Args:
+            databse (db): database
+            order (str): code to get selected effect
+        """
         super().__init__(databse)
         self.order=order
         
-    def actionphase(self):
+    def actionphase(self): # method choser method. Used to link the event card effect to its method by reading db
+        """ Method choser method. Used to link the event card effect to its method by reading db
+
+        Returns:
+            int: megacredits variation as consecuence of some events
+        """
         
         if self.order == "damage_to_defenders":meg = self.damage_to_defenders()
         elif self.order == "reinforcements":meg =self.reinforcements()
@@ -39,6 +53,14 @@ class Events(DBControl):
         
 
     def damage_to_defenders(self, damage = 2):
+        """_summary_
+
+        Args:
+            damage (int, optional): Damage dealt to defenders. Defaults to 2.
+
+        Returns:
+            int: megacredits variation
+        """
         
         defenders = identifierextractor(self.invertedcardselector("placement", "defending"))
         for dam in range(damage):
@@ -55,10 +77,20 @@ class Events(DBControl):
         
 
     def reinforcements(self):
+        """ Unused
+
+        Returns:
+            _type_: _description_
+        """
         
         return 0
 
     def discard_defender(self):
+        """ discard defenders card from hand
+
+        Returns:
+            int: megacredits variation
+        """
         hand = identifierextractor(self.invertedcardselector("placement", "hand"))
         for card in hand:
             if self.cardselector(card)[0][2] == "defender":
@@ -66,13 +98,22 @@ class Events(DBControl):
         return 0
 
     def discard_hand(self):
-        
+        """ discard hand
+
+        Returns:
+            int: megacredits variation
+        """
         hand = identifierextractor(self.invertedcardselector("placement", "hand"))
         for card in hand:
             self.tablemodifier(card,"placement", "discard")
         return 0
 
     def destroy_structure(self):
+        """ deals 1 hit to random building
+
+        Returns:
+            int: megacredits variation
+        """
         
         structures = identifierextractor(self.invertedcardselector("placement", "builded"))
         if len(structures) > 0:
@@ -86,6 +127,11 @@ class Events(DBControl):
         return 0
     
     def increase_prod(self):
+        """ Cahnge agrodomes output
+
+        Returns:
+            int: megacredits variation
+        """
         
         agrodomes = identifierextractor(self.genericdatabasequery("SELECT id FROM deck WHERE card LIKE 'Agrodome%'"))
         for a in agrodomes:
@@ -94,6 +140,11 @@ class Events(DBControl):
             
             
     def destroy_defender(self):
+        """ Discard defenders card in play
+
+        Returns:
+            int: megacredits variation
+        """
         
         defenders = identifierextractor(self.invertedcardselector("placement", "defending"))
         if len(defenders) > 0:
@@ -102,6 +153,11 @@ class Events(DBControl):
         return 0
 
     def eliminate_damage(self):
+        """ Clears all hits to defenders and buildings to their original values
+
+        Returns:
+            int: megacredits variation
+        """
         
         defenders = identifierextractor(self.invertedcardselector("placement", "defending"))
         for defender in defenders:
@@ -112,12 +168,22 @@ class Events(DBControl):
         return 0
 
     def gain_money_per_structure(self):
+        """ get money for every building
+
+        Returns:
+            int: megacredits variation
+        """
         meg = 0
         built = identifierextractor(self.invertedcardselector("placement", "builded"))
         meg = 3*len(built)
         return meg
 
     def return_discarded_defender(self):
+        """ return discarded defender to hand
+
+        Returns:
+            int: megacredits variation
+        """
         discarteddefender = []
         discarded = identifierextractor(self.invertedcardselector("placement", "discard"))
         for discarted in discarded:
@@ -130,6 +196,11 @@ class Events(DBControl):
         return 0
     
     def return_discarded_building(self):
+        """ return discarded building to hand
+        
+        Returns:
+            int: megacredits variation
+        """
         discartedbuilding = []
         discarded = identifierextractor(self.invertedcardselector("placement", "discard"))
         for discarted in discarded:
@@ -142,6 +213,11 @@ class Events(DBControl):
         return 0
     
     def gain_per_mine(self):
+        """ gain megacredits per mine in play
+        
+        Returns:
+            int: megacredits variation
+        """        
         meg = 0
         built = identifierextractor(self.invertedcardselector("placement", "builded"))
         for b in built:
@@ -150,6 +226,11 @@ class Events(DBControl):
         return meg
     
     def gain_per_colony(self):
+        """ gain megacredits per colony in play
+        
+        Returns:
+            int: megacredits variation
+        """
         meg = 0
         built = identifierextractor(self.invertedcardselector("placement", "builded"))
         for b in built:
@@ -158,6 +239,11 @@ class Events(DBControl):
         return meg
     
     def gain_per_lab(self):
+        """ gain megacredits per lab in play
+        
+        Returns:
+            int: megacredits variation
+        """
         meg = 0
         built = identifierextractor(self.invertedcardselector("placement", "builded"))
         for b in built:
@@ -166,6 +252,11 @@ class Events(DBControl):
         return meg
     
     def halve_money(self):
+        """ lose megacredits per building
+        
+        Returns:
+            int: megacredits variation
+        """
         meg = 0
         built = identifierextractor(self.invertedcardselector("placement", "builded"))
         for b in built:
@@ -174,6 +265,11 @@ class Events(DBControl):
         return meg
         
     def tax(self):
+        """ lose megacredits per building
+        
+        Returns:
+            int: megacredits variation
+        """
         meg = 0
         built = identifierextractor(self.invertedcardselector("placement", "builded"))
         meg = -2*len(built)
