@@ -29,9 +29,20 @@ Libraries:
 
 ### Executing program
 
-Run: gui.py. 
+Run gui.py. The game consist of 4 frames each representing different possible positions of the cards in play. 
 
-The 
+!
+
+1. Hand Area: cards` first possition once drawn from the deck.
+2. Base Area: Where building cards are placed upon being played from hand
+3. Defenders Area: This is the frame where defender cards are played
+4. Invaders Area: Invader cards are played in this area
+
+Finally, there is a frame dedicated to show information about the hoovered card ( 5 )
+
+
+
+ 
 
 ### Configuring the Neural Network
 
