@@ -47,9 +47,9 @@ The game consist in a common deck for all cards and is divided in phases
 
 1. Space Karma Phase: draw a card
 2. Event Phase: Event cards and Invader cards are played. In the case of events, the are resolved in this phase
-3. Battle Phase: Invaders attack the base. This is repressented by the invader card's force. Each force point has a 1/6 chance of inflicting 1 damage. Defenders and lasers counterattack by the same criteria. This phase is itself divided in 4 subphases:
- * Invaders vs Defenders: Invaders deal damage to defendenders and vis-versa. Each damage dealt means 1 hit reduce for one card. Damage is assigned randomly. If hits are reduced to cero the card is discarded.
- * Invaders vs lasers: If invaders defeat all defenders, they are still in play and damage is left 
+3. Battle Phase: Invaders attack the base. This is repressented by the invader card's force. Each force point has a 1/6 chance of inflicting 1 damage. Defenders and lasers counterattack by the same criteria. This phase is itself divided in 4 subphases in which invaders try to pass through defenders, lasers and domes to deal damage to the base while defenders and lasers deal damage back.  
+4. Build Phase: Building and defenders cards are played in this phase. It can be skipped to completely heal any building or defender
+5. 
 
 
 
