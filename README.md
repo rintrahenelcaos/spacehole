@@ -1,7 +1,4 @@
 
-Run with gui.py
-
-
 # SpaceHole.
 
 Solitaire card game based on: https://www.angelfire.com/games2/warpspawn/SHole.html .
@@ -12,7 +9,7 @@ Card game using a SQLite database as card manager. Both cards attributes and in 
 
 The UI was created over the PyQt5 library. This app was originally thought merely as an experiment over PyQt5's flexibility, as it is not meant to function as a game engine and it greatly limits the flexibility of the UI.
 
-The game is a solitaire space colony builder and defender. The player must defend and build up his Space colony and accumulate the most megacredits possible. Cards repressent colony structures (buildings), colony defence forces (defenders), colony threats (invaders) and random events (events).
+The game is a solitaire space colony builder and defender. The player must defend and build up his Space colony and accumulate the most megacredits ( 8 ) possible. Cards repressent colony structures (buildings), colony defence forces (defenders), colony threats (invaders) and random events (events). Game ends if the colony base is destroyed (defeat) or the deck runs out of cards (victory)
 
 
 ## Usage
@@ -49,12 +46,12 @@ The game consist in a common deck for all cards and is divided in phases
 2. Event Phase: Event cards and Invader cards are played. In the case of events, the are resolved in this phase
 3. Battle Phase: Invaders attack the base. This is repressented by the invader card's force. Each force point has a 1/6 chance of inflicting 1 damage. Defenders and lasers counterattack by the same criteria. This phase is itself divided in 4 subphases in which invaders try to pass through defenders, lasers and domes to deal damage to the base while defenders and lasers deal damage back.  
 4. Build Phase: Building and defenders cards are played in this phase. It can be skipped to completely heal any building or defender
-5. 
+5. Income Phase: Megacredits number is updated
+6. Discard Phase: Hand has a maximun (5 or 7 deppending on buildings). Excess card are discarded
 
+To pass form phase to phase, click on Next Phase button ( 7 ) or press Space.
 
-
- 
-
+Current game phase is informed on the top left corner ( 6 ) and important happenings in the game are shown on the botton left ( 9 )
 
 
 
